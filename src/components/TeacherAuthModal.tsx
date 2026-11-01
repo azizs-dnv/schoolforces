@@ -4,19 +4,7 @@ import { ShieldAlert, KeyRound, X, Lock } from 'lucide-react';
 interface TeacherAuthModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess: () => void;
-}
-
-export const TEACHER_PASSWORD_STORAGE_KEY = 'sf_teacher_master_password_v2';
-export const DEFAULT_TEACHER_PASSWORD = 'teacher2026';
-export const TEACHER_TOKEN_KEY = 'sf_teacher_token_secure_v1';
-
-export function getTeacherPassword(): string {
-  try {
-    return localStorage.getItem(TEACHER_PASSWORD_STORAGE_KEY) || DEFAULT_TEACHER_PASSWORD;
-  } catch {
-    return DEFAULT_TEACHER_PASSWORD;
-  }
+  onSuccess: (password: string) => Promise<void>;
 }
 
 export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({
@@ -29,23 +17,17 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const currentMasterPassword = getTeacherPassword();
-    if (password === currentMasterPassword) {
-      // Generate a secure session token
-      const token = 'token_' + Date.now() + '_' + Math.random().toString(36).substring(2, 12);
-      sessionStorage.setItem(TEACHER_TOKEN_KEY, token);
+    try {
+      await onSuccess(password);
       setPassword('');
       setError('');
-      onSuccess();
       onClose();
-    } else {
-      setError('Incorrect teacher master password. Access denied.');
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'Sign-in failed.');
     }
   };
-
-  const isCustomPassword = getTeacherPassword() !== DEFAULT_TEACHER_PASSWORD;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs">
@@ -91,13 +73,6 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({
                 className="w-full text-xs p-2 pl-8 border border-slate-300 rounded focus:outline-hidden focus:ring-2 focus:ring-red-600 font-mono"
               />
               <KeyRound className="w-4 h-4 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
-            </div>
-            <div className="text-[10px] text-slate-500 mt-1">
-              {isCustomPassword ? (
-                <span className="text-emerald-700 font-semibold">A custom teacher password is set.</span>
-              ) : (
-                <span>Default password: <code className="bg-slate-100 px-1 py-0.5 rounded text-slate-700 font-mono">teacher2026</code></span>
-              )}
             </div>
           </div>
 

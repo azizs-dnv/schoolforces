@@ -43,7 +43,6 @@ export const INITIAL_CONTESTS: Contest[] = [
 export const INITIAL_USERS: User[] = [
   {
     handle: 'tourist_junior',
-    password: 'password123',
     rating: 2150,
     maxRating: 2150,
     solvedProblems: ['A', 'B', 'C', 'D', 'E'],
@@ -53,7 +52,6 @@ export const INITIAL_USERS: User[] = [
   },
   {
     handle: 'coder_ivan',
-    password: 'password123',
     rating: 1450,
     maxRating: 1480,
     solvedProblems: ['A', 'B', 'C'],
@@ -63,7 +61,6 @@ export const INITIAL_USERS: User[] = [
   },
   {
     handle: 'anna_school9',
-    password: 'password123',
     rating: 1320,
     maxRating: 1320,
     solvedProblems: ['A', 'B'],
@@ -73,7 +70,6 @@ export const INITIAL_USERS: User[] = [
   },
   {
     handle: 'python_master',
-    password: 'password123',
     rating: 1250,
     maxRating: 1250,
     solvedProblems: ['A'],
@@ -83,7 +79,6 @@ export const INITIAL_USERS: User[] = [
   },
   {
     handle: 'newbie_petya',
-    password: 'password123',
     rating: 1180,
     maxRating: 1200,
     solvedProblems: [],

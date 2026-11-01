@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
-import { User } from '../types';
-import { X, LogIn, AlertCircle, ShieldCheck, KeyRound } from 'lucide-react';
+import { X, LogIn, AlertCircle, KeyRound } from 'lucide-react';
 
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onLogin: (user: User) => void;
+  onLogin: (handle: string, password: string) => Promise<void>;
   onOpenTeacherAuth: () => void;
-  users: User[];
 }
 
 export const AuthModal: React.FC<AuthModalProps> = ({
@@ -15,7 +13,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   onClose,
   onLogin,
   onOpenTeacherAuth,
-  users
 }) => {
   const [handle, setHandle] = useState('');
   const [password, setPassword] = useState('');
@@ -23,7 +20,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
@@ -38,21 +35,17 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       return;
     }
 
-    const existingUser = users.find(
-      u => u.handle.toLowerCase() === cleanHandle.toLowerCase()
-    );
-
-    if (!existingUser || existingUser.password !== password) {
-      setError('Incorrect username or password. Make sure your teacher has registered your account.');
-      return;
+    try {
+      await onLogin(cleanHandle, password);
+      onClose();
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'Sign-in failed.');
     }
-
-    onLogin(existingUser);
-    onClose();
   };
 
-  const handleQuickLogin = (demoUser: User) => {
-    onLogin(demoUser);
+  const handleClose = () => {
+    setPassword('');
+    setError('');
     onClose();
   };
 
@@ -68,20 +61,19 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             </span>
           </div>
           <button
-            onClick={onClose}
+            onClick={handleClose}
             className="text-slate-200 hover:text-white transition cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Notice that students are registered exclusively by teachers */}
         <div className="bg-blue-50/70 border-b border-blue-200 px-5 py-2.5 text-xs text-blue-900 flex items-center justify-between">
-          <span>Students can only be registered by a teacher</span>
+          <span>Ask your teacher to create your student account.</span>
           <button
             type="button"
             onClick={() => {
-              onClose();
+              handleClose();
               onOpenTeacherAuth();
             }}
             className="text-[11px] font-bold text-blue-700 hover:underline flex items-center gap-1 cursor-pointer"
@@ -91,7 +83,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           </button>
         </div>
 
-        {/* Form */}
         <form onSubmit={handleSubmit} className="p-5 space-y-4 text-xs">
           {error && (
             <div className="p-2.5 bg-red-50 border border-red-200 rounded text-red-700 flex items-start gap-2">
@@ -102,13 +93,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
           <div>
             <label className="block font-semibold text-slate-700 mb-1">
-              Student username (handle):
+              Student username:
             </label>
             <input
               type="text"
               required
               autoFocus
-              placeholder="e.g., tourist_junior or coder_ivan"
+              placeholder="Your username"
               value={handle}
               onChange={e => setHandle(e.target.value)}
               className="w-full text-xs p-2 border border-slate-300 rounded focus:outline-hidden focus:ring-1 focus:ring-blue-600"
@@ -134,26 +125,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             Sign in
           </button>
         </form>
-
-        {/* Quick Demo Login selector */}
-        <div className="bg-slate-50 px-5 py-3 border-t border-slate-200 text-xs">
-          <div className="font-semibold text-slate-600 mb-2 flex items-center gap-1.5">
-            <ShieldCheck className="w-3.5 h-3.5 text-blue-600" />
-            <span>Student demo accounts:</span>
-          </div>
-          <div className="flex flex-wrap gap-1.5">
-            {users.slice(0, 4).map(u => (
-              <button
-                key={u.handle}
-                type="button"
-                onClick={() => handleQuickLogin(u)}
-                className="px-2 py-1 bg-white hover:bg-blue-50 border border-slate-300 rounded text-[11px] font-medium text-slate-700 cursor-pointer"
-              >
-                {u.handle} ({u.rating})
-              </button>
-            ))}
-          </div>
-        </div>
       </div>
     </div>
   );

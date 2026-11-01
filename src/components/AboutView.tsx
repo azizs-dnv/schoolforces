@@ -101,10 +101,10 @@ console.log(a + b);`}
             • <b>Student registration:</b> Student self-registration is disabled. Usernames and passwords are issued by a teacher through the secure teacher panel.
           </p>
           <p>
-            • <b>Teacher panel security:</b> Access to the teacher panel is restricted by URL and requires the master password. Successful sign-in issues a cryptographic session token.
+            • <b>Teacher panel security:</b> Teacher actions require an authenticated server session. Student passwords are stored as salted hashes on the server.
           </p>
           <p>
-            • <b>Test security:</b> Hidden tests are checked by hashing expected answers, so students cannot inspect the correct answers in the browser console.
+            • <b>Evaluation:</b> This version runs the judge in the browser. Hidden tests and verdicts are not tamper-proof, so use it for supervised LAN practice, not high-stakes contests.
           </p>
         </div>
       </div>

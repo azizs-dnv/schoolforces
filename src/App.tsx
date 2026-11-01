@@ -4,9 +4,8 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { User, Problem, Submission, Contest } from './types';
-import { PROBLEMS as INITIAL_PROBLEMS } from './data/problems';
-import { INITIAL_USERS, INITIAL_SUBMISSIONS, INITIAL_CONTESTS } from './data/mockData';
+import { User, Problem, Submission, Contest, StudentRegistration } from './types';
+import { apiRequest, AUTH_TOKEN_KEY, SharedState, updateSharedState } from './api';
 import { Header } from './components/Header';
 import { ContestsList } from './components/ContestsList';
 import { ContestView } from './components/ContestView';
@@ -17,82 +16,20 @@ import { SubmissionsList } from './components/SubmissionsList';
 import { Profile } from './components/Profile';
 import { AboutView } from './components/AboutView';
 import { AuthModal } from './components/AuthModal';
-import { TeacherAuthModal, TEACHER_TOKEN_KEY } from './components/TeacherAuthModal';
+import { TeacherAuthModal } from './components/TeacherAuthModal';
 import { TeacherPanel } from './components/TeacherPanel';
 import { SubmissionModal } from './components/SubmissionModal';
 import { Sparkles, CheckCircle2, RefreshCw } from 'lucide-react';
 
-const STORAGE_KEY_CONTESTS = 'sf_contests_v2';
-const STORAGE_KEY_USERS = 'sf_users_v2';
-const STORAGE_KEY_PROBLEMS = 'sf_problems_v2';
-const STORAGE_KEY_CURRENT_USER = 'sf_current_user_v2';
-const STORAGE_KEY_SUBMISSIONS = 'sf_submissions_v2';
-
 export default function App() {
-  // 1. Initialize Contests
-  const [contests, setContests] = useState<Contest[]>(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY_CONTESTS);
-      if (saved) return JSON.parse(saved);
-    } catch (e) {
-      console.error('Error loading contests:', e);
-    }
-    return INITIAL_CONTESTS;
-  });
-
-  // 2. Initialize Problems
-  const [problems, setProblems] = useState<Problem[]>(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY_PROBLEMS);
-      if (saved) return JSON.parse(saved);
-    } catch (e) {
-      console.error('Error loading problems:', e);
-    }
-    return INITIAL_PROBLEMS;
-  });
-
-  // 3. Initialize Users
-  const [users, setUsers] = useState<User[]>(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY_USERS);
-      if (saved) return JSON.parse(saved);
-    } catch (e) {
-      console.error('Error loading users:', e);
-    }
-    return INITIAL_USERS;
-  });
-
-  // 4. Current User
-  const [currentUser, setCurrentUser] = useState<User | null>(() => {
-    try {
-      const savedHandle = localStorage.getItem(STORAGE_KEY_CURRENT_USER);
-      if (savedHandle) {
-        const savedUsers = localStorage.getItem(STORAGE_KEY_USERS);
-        const usersList: User[] = savedUsers ? JSON.parse(savedUsers) : INITIAL_USERS;
-        const found = usersList.find(u => u.handle === savedHandle);
-        if (found) return found;
-      }
-    } catch (e) {
-      console.error('Error loading current user:', e);
-    }
-    return null;
-  });
-
-  // 5. Submissions
-  const [submissions, setSubmissions] = useState<Submission[]>(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY_SUBMISSIONS);
-      if (saved) return JSON.parse(saved);
-    } catch (e) {
-      console.error('Error loading submissions:', e);
-    }
-    return INITIAL_SUBMISSIONS;
-  });
-
-  // 6. Teacher session verification
-  const [isTeacherAuthenticated, setIsTeacherAuthenticated] = useState<boolean>(() => {
-    return sessionStorage.getItem(TEACHER_TOKEN_KEY) !== null;
-  });
+  const [contests, setContests] = useState<Contest[]>([]);
+  const [problems, setProblems] = useState<Problem[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [submissions, setSubmissions] = useState<Submission[]>([]);
+  const [isTeacherAuthenticated, setIsTeacherAuthenticated] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [serverError, setServerError] = useState<string | null>(null);
 
   // Navigation & View state
   // The default tab is contests, before the problems tab.
@@ -113,89 +50,51 @@ export default function App() {
     null
   );
 
-  // Synchronize state changes to LocalStorage
-  useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY_CONTESTS, JSON.stringify(contests));
-    } catch (e) {
-      console.error('Failed to save contests to LocalStorage:', e);
-    }
-  }, [contests]);
+  const applySharedState = (state: SharedState) => {
+    updateSharedState(state, { setUsers, setContests, setProblems, setSubmissions });
+    setCurrentUser(previous =>
+      previous ? state.users.find(user => user.handle === previous.handle) || null : null
+    );
+  };
 
   useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY_PROBLEMS, JSON.stringify(problems));
-    } catch (e) {
-      console.error('Failed to save problems to LocalStorage:', e);
-    }
-  }, [problems]);
-
-  useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY_USERS, JSON.stringify(users));
-    } catch (e) {
-      console.error('Failed to save users to LocalStorage:', e);
-    }
-  }, [users]);
-
-  useEffect(() => {
-    try {
-      if (currentUser) {
-        localStorage.setItem(STORAGE_KEY_CURRENT_USER, currentUser.handle);
-      } else {
-        localStorage.removeItem(STORAGE_KEY_CURRENT_USER);
-      }
-    } catch (e) {
-      console.error('Failed to save current user to LocalStorage:', e);
-    }
-  }, [currentUser]);
-
-  useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY_SUBMISSIONS, JSON.stringify(submissions));
-    } catch (e) {
-      console.error('Failed to save submissions to LocalStorage:', e);
-    }
-  }, [submissions]);
-
-  // LAN / Multi-tab Synchronization:
-  // Listens to changes made by other tabs/clients (e.g. teacher starts contest, students immediately see it!)
-  useEffect(() => {
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === STORAGE_KEY_CONTESTS && e.newValue) {
-        setContests(JSON.parse(e.newValue));
-      }
-      if (e.key === STORAGE_KEY_SUBMISSIONS && e.newValue) {
-        setSubmissions(JSON.parse(e.newValue));
-      }
-      if (e.key === STORAGE_KEY_PROBLEMS && e.newValue) {
-        setProblems(JSON.parse(e.newValue));
-      }
-      if (e.key === STORAGE_KEY_USERS && e.newValue) {
-        setUsers(JSON.parse(e.newValue));
+    let active = true;
+    const refresh = async () => {
+      try {
+        const state = await apiRequest<SharedState>('/api/state', {}, false);
+        if (active) {
+          applySharedState(state);
+          setServerError(null);
+          setIsLoaded(true);
+        }
+      } catch (error) {
+        if (active) {
+          setServerError(error instanceof Error ? error.message : 'Unable to connect to the LAN server.');
+          setIsLoaded(true);
+        }
       }
     };
 
-    window.addEventListener('storage', handleStorageChange);
-
-    // Periodic check for LAN synchronization
+    void refresh();
     const syncInterval = setInterval(() => {
-      try {
-        const cSaved = localStorage.getItem(STORAGE_KEY_CONTESTS);
-        if (cSaved) {
-          const parsed = JSON.parse(cSaved);
-          setContests(prev => (JSON.stringify(prev) !== cSaved ? parsed : prev));
-        }
-        const sSaved = localStorage.getItem(STORAGE_KEY_SUBMISSIONS);
-        if (sSaved) {
-          const parsedSubs = JSON.parse(sSaved);
-          setSubmissions(prev => (JSON.stringify(prev) !== sSaved ? parsedSubs : prev));
-        }
-      } catch (err) {}
+      void refresh();
     }, 2500);
 
+    const token = localStorage.getItem(AUTH_TOKEN_KEY);
+    if (token) {
+      void apiRequest<{ role: 'teacher' | 'student'; user: User | null }>('/api/session')
+        .then(session => {
+          if (!active) return;
+          setIsTeacherAuthenticated(session.role === 'teacher');
+          setCurrentUser(session.user);
+        })
+        .catch(() => {
+          localStorage.removeItem(AUTH_TOKEN_KEY);
+        });
+    }
+
     return () => {
-      window.removeEventListener('storage', handleStorageChange);
+      active = false;
       clearInterval(syncInterval);
     };
   }, []);
@@ -212,8 +111,7 @@ export default function App() {
     tab: 'contests' | 'problems' | 'submissions' | 'leaderboard' | 'profile' | 'about' | 'teacher'
   ) => {
     if (tab === 'teacher') {
-      const hasToken = sessionStorage.getItem(TEACHER_TOKEN_KEY) !== null;
-      if (!hasToken) {
+      if (!isTeacherAuthenticated) {
         showToast('Access denied. The teacher master password is required.', 'error');
         setIsTeacherAuthOpen(true);
         return;
@@ -226,167 +124,201 @@ export default function App() {
   };
 
   // Auth Handlers for students
-  const handleLogin = (user: User) => {
-    setCurrentUser(user);
-    showToast(`Welcome back, ${user.handle}! Your rating: ${user.rating}`, 'info');
+  const handleLogin = async (handle: string, password: string) => {
+    const result = await apiRequest<{ token: string; user: User }>('/api/auth/student', {
+      method: 'POST',
+      body: JSON.stringify({ handle, password })
+    }, false);
+    localStorage.setItem(AUTH_TOKEN_KEY, result.token);
+    setCurrentUser(result.user);
+    setIsTeacherAuthenticated(false);
+    showToast(`Welcome back, ${result.user.handle}! Your rating: ${result.user.rating}`, 'info');
   };
 
   const handleLogout = () => {
+    void apiRequest<void>('/api/auth/logout', { method: 'POST' }).catch(error => {
+      console.error('Unable to close the server session:', error);
+    });
+    localStorage.removeItem(AUTH_TOKEN_KEY);
     setCurrentUser(null);
+    setIsTeacherAuthenticated(false);
     showToast('You have been logged out.', 'info');
   };
 
   // Teacher Handlers
-  const handleTeacherAuthSuccess = () => {
+  const handleTeacherAuthSuccess = async (password: string) => {
+    const result = await apiRequest<{ token: string }>('/api/auth/teacher', {
+      method: 'POST',
+      body: JSON.stringify({ password })
+    }, false);
+    localStorage.setItem(AUTH_TOKEN_KEY, result.token);
+    setCurrentUser(null);
     setIsTeacherAuthenticated(true);
     setActiveTab('teacher');
     showToast('Successfully signed in to the teacher panel.', 'success');
   };
 
   const handleExitTeacherMode = () => {
-    sessionStorage.removeItem(TEACHER_TOKEN_KEY);
-    setIsTeacherAuthenticated(false);
-    if (activeTab === 'teacher') {
-      setActiveTab('contests');
-    }
-    showToast('Teacher session ended.', 'info');
+    handleLogout();
+    if (activeTab === 'teacher') setActiveTab('contests');
+  };
+
+  const applyMutationResult = (state: SharedState) => {
+    applySharedState(state);
+    setServerError(null);
+  };
+
+  const performTeacherMutation = async (
+    endpoint: string,
+    method: 'POST' | 'PUT' | 'DELETE',
+    body?: unknown
+  ): Promise<SharedState> => {
+    return apiRequest<SharedState>(endpoint, {
+      method,
+      ...(body === undefined ? {} : { body: JSON.stringify(body) })
+    });
   };
 
   // Contest Actions (Teacher Launch, Finish, Save, Delete)
-  const handleStartContest = (contestId: string) => {
-    setContests(prev =>
-      prev.map(c => {
-        if (c.id === contestId) {
-          const startedAt = Date.now();
-          const endsAt = startedAt + c.durationMinutes * 60000;
-          return { ...c, status: 'running', startedAt, endsAt };
-        }
-        return c;
-      })
-    );
-    showToast('🚀 Contest started! Participants can now access its problems.', 'success');
-  };
-
-  const handleFinishContest = (contestId: string) => {
-    setContests(prev =>
-      prev.map(c => (c.id === contestId ? { ...c, status: 'finished' } : c))
-    );
-    showToast('Contest ended. Results have been finalized.', 'info');
-  };
-
-  const handleSaveContest = (contest: Contest) => {
-    setContests(prev => {
-      const idx = prev.findIndex(c => c.id === contest.id);
-      if (idx !== -1) {
-        const copy = [...prev];
-        copy[idx] = contest;
-        return copy;
-      }
-      return [contest, ...prev];
-    });
-    showToast(`Contest "${contest.title}" saved!`, 'success');
-  };
-
-  const handleDeleteContest = (contestId: string) => {
-    setContests(prev => prev.filter(c => c.id !== contestId));
-    if (selectedContest?.id === contestId) {
-      setSelectedContest(null);
+  const handleStartContest = async (contestId: string) => {
+    try {
+      applyMutationResult(await performTeacherMutation(
+        `/api/teacher/contests/${encodeURIComponent(contestId)}/status`,
+        'POST',
+        { status: 'running' }
+      ));
+      showToast('🚀 Contest started! Participants can now access its problems.', 'success');
+    } catch (error) {
+      showToast(error instanceof Error ? error.message : 'Unable to start the contest.', 'error');
     }
-    showToast('Contest deleted.', 'info');
+  };
+
+  const handleFinishContest = async (contestId: string) => {
+    try {
+      applyMutationResult(await performTeacherMutation(
+        `/api/teacher/contests/${encodeURIComponent(contestId)}/status`,
+        'POST',
+        { status: 'finished' }
+      ));
+      showToast('Contest ended. Results have been finalized.', 'info');
+    } catch (error) {
+      showToast(error instanceof Error ? error.message : 'Unable to finish the contest.', 'error');
+    }
+  };
+
+  const handleSaveContest = async (contest: Contest) => {
+    try {
+      applyMutationResult(await performTeacherMutation(
+        `/api/teacher/contests/${encodeURIComponent(contest.id)}`,
+        'PUT',
+        contest
+      ));
+      showToast(`Contest "${contest.title}" saved!`, 'success');
+    } catch (error) {
+      showToast(error instanceof Error ? error.message : 'Unable to save the contest.', 'error');
+      throw error;
+    }
+  };
+
+  const handleDeleteContest = async (contestId: string) => {
+    try {
+      applyMutationResult(await performTeacherMutation(
+        `/api/teacher/contests/${encodeURIComponent(contestId)}`,
+        'DELETE'
+      ));
+      if (selectedContest?.id === contestId) setSelectedContest(null);
+      showToast('Contest deleted.', 'info');
+    } catch (error) {
+      showToast(error instanceof Error ? error.message : 'Unable to delete the contest.', 'error');
+    }
   };
 
   // Problem management
-  const handleSaveProblem = (savedProb: Problem) => {
-    setProblems(prev => {
-      const idx = prev.findIndex(p => p.id === savedProb.id);
-      if (idx !== -1) {
-        const copy = [...prev];
-        copy[idx] = savedProb;
-        return copy;
-      }
-      return [...prev, savedProb];
-    });
-    showToast(`Problem "${savedProb.id}. ${savedProb.title}" saved!`, 'success');
-  };
-
-  const handleDeleteProblem = (problemId: string) => {
-    setProblems(prev => prev.filter(p => p.id !== problemId));
-    if (selectedProblem?.id === problemId) {
-      setSelectedProblem(null);
+  const handleSaveProblem = async (savedProb: Problem) => {
+    try {
+      applyMutationResult(await performTeacherMutation(
+        `/api/teacher/problems/${encodeURIComponent(savedProb.id)}`,
+        'PUT',
+        savedProb
+      ));
+      showToast(`Problem "${savedProb.id}. ${savedProb.title}" saved!`, 'success');
+    } catch (error) {
+      showToast(error instanceof Error ? error.message : 'Unable to save the problem.', 'error');
+      throw error;
     }
-    showToast(`Problem "${problemId}" deleted.`, 'info');
   };
 
-  const handleRegisterStudentByTeacher = (newStudent: User): boolean => {
-    const exists = users.some(u => u.handle.toLowerCase() === newStudent.handle.toLowerCase());
-    if (exists) return false;
-    setUsers(prev => [newStudent, ...prev]);
+  const handleDeleteProblem = async (problemId: string) => {
+    try {
+      applyMutationResult(await performTeacherMutation(
+        `/api/teacher/problems/${encodeURIComponent(problemId)}`,
+        'DELETE'
+      ));
+      if (selectedProblem?.id === problemId) setSelectedProblem(null);
+      showToast(`Problem "${problemId}" deleted.`, 'info');
+    } catch (error) {
+      showToast(error instanceof Error ? error.message : 'Unable to delete the problem.', 'error');
+    }
+  };
+
+  const handleRegisterStudentByTeacher = async (newStudent: StudentRegistration): Promise<boolean> => {
+    const state = await performTeacherMutation('/api/teacher/students', 'POST', newStudent);
+    applyMutationResult(state);
     return true;
   };
 
-  const handleDeleteStudent = (handle: string) => {
-    setUsers(prev => prev.filter(u => u.handle !== handle));
-    if (currentUser?.handle === handle) {
-      setCurrentUser(null);
+  const handleDeleteStudent = async (handle: string) => {
+    try {
+      applyMutationResult(await performTeacherMutation(
+        `/api/teacher/students/${encodeURIComponent(handle)}`,
+        'DELETE'
+      ));
+      if (currentUser?.handle === handle) setCurrentUser(null);
+      showToast(`Student "${handle}" deleted.`, 'info');
+    } catch (error) {
+      showToast(error instanceof Error ? error.message : 'Unable to delete the student.', 'error');
     }
-    showToast(`Student "${handle}" deleted.`, 'info');
   };
 
   // Submission handler from ProblemDetail (with contest context)
-  const handleSubmitSuccess = (newSub: Submission, isFirstSolve: boolean) => {
-    // If inside a contest, attach contestId and contestMinute
-    let subToRecord = { ...newSub };
-    if (selectedContest && selectedContest.status === 'running') {
-      const startMs = selectedContest.startedAt || Date.now();
-      const currentMinute = Math.max(1, Math.round((Date.now() - startMs) / 60000));
-      subToRecord.contestId = selectedContest.id;
-      subToRecord.contestMinute = currentMinute;
-    }
-
-    setSubmissions(prev => [subToRecord, ...prev]);
-
+  const handleSubmitSuccess = async (newSub: Submission) => {
     if (!currentUser) return;
-
-    let updatedUser = { ...currentUser, submissionsCount: currentUser.submissionsCount + 1 };
-
-    if (isFirstSolve) {
-      const newRating = currentUser.rating + 50;
-      const newMaxRating = Math.max(currentUser.maxRating, newRating);
-      const newSolved = [...currentUser.solvedProblems, newSub.problemId];
-
-      updatedUser = {
-        ...updatedUser,
-        rating: newRating,
-        maxRating: newMaxRating,
-        solvedProblems: newSolved
-      };
-
-      showToast(`🎉 Congratulations! Problem ${newSub.problemId} solved! Rating: +50 (now ${newRating})`, 'success');
+    const body = { ...newSub };
+    if (selectedContest && selectedContest.status === 'running') {
+      body.contestId = selectedContest.id;
     }
-
-    setCurrentUser(updatedUser);
-    setUsers(prev => prev.map(u => (u.handle === updatedUser.handle ? updatedUser : u)));
+    try {
+      const result = await apiRequest<SharedState & { currentUser: User; isFirstSolve: boolean }>(
+        '/api/submissions',
+        { method: 'POST', body: JSON.stringify(body) }
+      );
+      applyMutationResult(result);
+      setCurrentUser(result.currentUser);
+      if (result.isFirstSolve) {
+        showToast(`🎉 Congratulations! Problem ${newSub.problemId} solved! Rating: +50 (now ${result.currentUser.rating})`, 'success');
+      }
+    } catch (error) {
+      showToast(error instanceof Error ? error.message : 'Unable to save the submission.', 'error');
+    }
   };
 
   const handleResetAllData = () => {
-    if (confirm('Reset all contests, problems, and accounts to the initial demo data?')) {
-      localStorage.removeItem(STORAGE_KEY_CONTESTS);
-      localStorage.removeItem(STORAGE_KEY_USERS);
-      localStorage.removeItem(STORAGE_KEY_PROBLEMS);
-      localStorage.removeItem(STORAGE_KEY_CURRENT_USER);
-      localStorage.removeItem(STORAGE_KEY_SUBMISSIONS);
-      sessionStorage.removeItem(TEACHER_TOKEN_KEY);
-      setContests(INITIAL_CONTESTS);
-      setProblems(INITIAL_PROBLEMS);
-      setUsers(INITIAL_USERS);
-      setCurrentUser(null);
-      setSubmissions(INITIAL_SUBMISSIONS);
-      setIsTeacherAuthenticated(false);
+    if (confirm('Reset shared contests, problems, users, and submissions to the initial data?')) {
+      void performTeacherMutation('/api/teacher/reset', 'POST')
+        .then(applyMutationResult)
+        .then(() => showToast('Shared application data has been reset.', 'info'))
+        .catch(error => showToast(error instanceof Error ? error.message : 'Unable to reset data.', 'error'));
       setSelectedContest(null);
       setSelectedProblem(null);
       setActiveTab('contests');
-      showToast('All data has been reset to the initial values.', 'info');
     }
+  };
+
+  const handleChangeTeacherPassword = async (currentPassword: string, newPassword: string) => {
+    await apiRequest<{ message: string }>('/api/teacher/password', {
+      method: 'POST',
+      body: JSON.stringify({ currentPassword, newPassword })
+    });
   };
 
   const handleSelectProblemById = (problemId: string) => {
@@ -401,6 +333,27 @@ export default function App() {
   const activeContestObj = selectedContest
     ? contests.find(c => c.id === selectedContest.id) || selectedContest
     : null;
+
+  if (!isLoaded || serverError) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#f0f2f5] p-6 text-center">
+        <div className="max-w-md bg-white border border-slate-200 rounded-lg p-6 shadow-sm">
+          <h1 className="text-lg font-bold text-slate-800">SchoolForces LAN</h1>
+          <p className="mt-2 text-sm text-slate-600">
+            {!isLoaded ? 'Connecting to the SchoolForces server…' : serverError}
+          </p>
+          {serverError && (
+            <button
+              onClick={() => window.location.reload()}
+              className="mt-4 px-4 py-2 bg-blue-700 hover:bg-blue-800 text-white rounded text-sm font-semibold"
+            >
+              Retry
+            </button>
+          )}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#f0f2f5] text-slate-800 font-sans flex flex-col selection:bg-blue-600 selection:text-white">
@@ -448,8 +401,8 @@ export default function App() {
                     currentUser={currentUser}
                     onBack={() => setSelectedProblem(null)}
                     onOpenLogin={() => setIsAuthModalOpen(true)}
-                    onSubmitSuccess={(sub, isFirst) => {
-                      handleSubmitSuccess(sub, isFirst);
+                    onSubmitSuccess={sub => {
+                      void handleSubmitSuccess(sub);
                       setSelectedProblem(null);
                     }}
                   />
@@ -559,6 +512,7 @@ export default function App() {
             onDeleteContest={handleDeleteContest}
             onStartContest={handleStartContest}
             onFinishContest={handleFinishContest}
+            onChangePassword={handleChangeTeacherPassword}
             onExitTeacherMode={handleExitTeacherMode}
           />
         )}
@@ -574,20 +528,24 @@ export default function App() {
               <span className="w-1.5 h-2.5 bg-red-600 rounded-t-xs"></span>
             </div>
             <span className="font-bold text-slate-700">SchoolForces 2.5</span>
-            <span>— Programming contest platform (LAN &amp; offline ready)</span>
+            <span>— Programming contest platform for local networks</span>
           </div>
 
           <div className="flex items-center gap-4 text-[11px]">
             <span>ICPC scoreboard • C++, Python, JavaScript • Contest timer</span>
-            <span>•</span>
-            <button
-              onClick={handleResetAllData}
-              className="text-slate-500 hover:text-red-600 underline cursor-pointer flex items-center gap-1"
-              title="Reset all data to the initial demo values"
-            >
-              <RefreshCw className="w-3 h-3" />
-              <span>Reset demo data</span>
-            </button>
+            {isTeacherAuthenticated && (
+              <>
+                <span>•</span>
+                <button
+                  onClick={handleResetAllData}
+                  className="text-slate-500 hover:text-red-600 underline cursor-pointer flex items-center gap-1"
+                  title="Reset all shared data"
+                >
+                  <RefreshCw className="w-3 h-3" />
+                  <span>Reset shared data</span>
+                </button>
+              </>
+            )}
           </div>
         </div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 mt-5 border-t border-[#e5e7eb] pt-4 text-[11px]">
@@ -612,7 +570,6 @@ export default function App() {
         onClose={() => setIsAuthModalOpen(false)}
         onLogin={handleLogin}
         onOpenTeacherAuth={() => setIsTeacherAuthOpen(true)}
-        users={users}
       />
 
       {/* Teacher Authentication Modal */}

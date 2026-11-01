@@ -1,6 +1,5 @@
 export interface User {
   handle: string;
-  password: string;
   rating: number;
   maxRating: number;
   solvedProblems: string[]; // problem IDs
@@ -9,6 +8,8 @@ export interface User {
   fullName?: string;
   allowedContests?: string[]; // IDs of contests accessible by student, or ['*']
 }
+
+export type StudentRegistration = User & { password: string };
 
 export interface TestCase {
   id?: string;

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Problem, User, TestCase, Contest } from '../types';
+import { Problem, User, TestCase, Contest, StudentRegistration } from '../types';
 import { computeHash } from '../utils/judge';
-import { TEACHER_TOKEN_KEY, TEACHER_PASSWORD_STORAGE_KEY, DEFAULT_TEACHER_PASSWORD, getTeacherPassword } from './TeacherAuthModal';
+import { AUTH_TOKEN_KEY } from '../api';
 import {
   Plus,
   Trash2,
@@ -18,7 +18,6 @@ import {
   Cpu,
   KeyRound,
   Lock,
-  RefreshCw,
   Trophy,
   Play,
   StopCircle
@@ -28,14 +27,15 @@ interface TeacherPanelProps {
   problems: Problem[];
   users: User[];
   contests: Contest[];
-  onSaveProblem: (problem: Problem) => void;
+  onSaveProblem: (problem: Problem) => Promise<void>;
   onDeleteProblem: (problemId: string) => void;
-  onRegisterStudent: (newStudent: User) => boolean;
+  onRegisterStudent: (newStudent: StudentRegistration) => Promise<boolean>;
   onDeleteStudent: (handle: string) => void;
-  onSaveContest: (contest: Contest) => void;
+  onSaveContest: (contest: Contest) => Promise<void>;
   onDeleteContest: (contestId: string) => void;
   onStartContest: (contestId: string) => void;
   onFinishContest: (contestId: string) => void;
+  onChangePassword: (currentPassword: string, newPassword: string) => Promise<void>;
   onExitTeacherMode: () => void;
 }
 
@@ -51,10 +51,11 @@ export const TeacherPanel: React.FC<TeacherPanelProps> = ({
   onDeleteContest,
   onStartContest,
   onFinishContest,
+  onChangePassword,
   onExitTeacherMode
 }) => {
   // Verify token
-  const token = sessionStorage.getItem(TEACHER_TOKEN_KEY);
+  const token = localStorage.getItem(AUTH_TOKEN_KEY);
   if (!token) {
     return (
       <div className="bg-red-50 border-2 border-red-500 rounded p-6 text-center max-w-lg mx-auto shadow-md">
@@ -89,33 +90,28 @@ export const TeacherPanel: React.FC<TeacherPanelProps> = ({
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const [pwdMsg, setPwdMsg] = useState<{ text: string; isError: boolean } | null>(null);
 
-  const handleChangePassword = (e: React.FormEvent) => {
+  const handleChangePassword = async (e: React.FormEvent) => {
     e.preventDefault();
     setPwdMsg(null);
-    const currentMaster = getTeacherPassword();
-    if (oldPassword !== currentMaster) {
-      setPwdMsg({ text: 'The current teacher password is incorrect!', isError: true });
-      return;
-    }
-    if (newPassword.length < 4) {
-      setPwdMsg({ text: 'The new password must be at least 4 characters long!', isError: true });
+    if (newPassword.length < 12) {
+      setPwdMsg({ text: 'The new password must be at least 12 characters long!', isError: true });
       return;
     }
     if (newPassword !== confirmNewPassword) {
       setPwdMsg({ text: 'The new passwords do not match!', isError: true });
       return;
     }
-    localStorage.setItem(TEACHER_PASSWORD_STORAGE_KEY, newPassword);
-    setOldPassword('');
-    setNewPassword('');
-    setConfirmNewPassword('');
-    setPwdMsg({ text: 'Teacher master password changed and saved successfully!', isError: false });
-  };
-
-  const handleResetPasswordToDefault = () => {
-    if (confirm('Reset the teacher password to the default "teacher2026"?')) {
-      localStorage.removeItem(TEACHER_PASSWORD_STORAGE_KEY);
-      setPwdMsg({ text: 'Password reset to the default "teacher2026".', isError: false });
+    try {
+      await onChangePassword(oldPassword, newPassword);
+      setOldPassword('');
+      setNewPassword('');
+      setConfirmNewPassword('');
+      setPwdMsg({ text: 'Teacher password updated successfully.', isError: false });
+    } catch (error) {
+      setPwdMsg({
+        text: error instanceof Error ? error.message : 'Unable to update the teacher password.',
+        isError: true
+      });
     }
   };
 
@@ -145,7 +141,7 @@ export const TeacherPanel: React.FC<TeacherPanelProps> = ({
   const [studentError, setStudentError] = useState('');
   const [studentSuccess, setStudentSuccess] = useState('');
 
-  const handleCreateContestSubmit = (e: React.FormEvent) => {
+  const handleCreateContestSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!contestTitle.trim()) {
       alert('Enter a contest name!');
@@ -169,7 +165,12 @@ export const TeacherPanel: React.FC<TeacherPanelProps> = ({
       author: 'Computer science teacher'
     };
 
-    onSaveContest(newContest);
+    try {
+      await onSaveContest(newContest);
+    } catch (error) {
+      alert(error instanceof Error ? error.message : 'Unable to save the contest.');
+      return;
+    }
     alert(`Contest "${contestTitle.trim()}" created successfully! You can start it at any time.`);
     setContestTitle('');
     setContestDesc('');
@@ -234,7 +235,7 @@ export const TeacherPanel: React.FC<TeacherPanelProps> = ({
     ]);
   };
 
-  const handlePublishProblem = (e: React.FormEvent) => {
+  const handlePublishProblem = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim()) {
       alert('Enter a problem title!');
@@ -297,13 +298,18 @@ const input = fs.readFileSync(0, 'utf-8').trim();
       createdAt: new Date().toISOString().split('T')[0]
     };
 
-    onSaveProblem(newProblem);
+    try {
+      await onSaveProblem(newProblem);
+    } catch (error) {
+      alert(error instanceof Error ? error.message : 'Unable to save the problem.');
+      return;
+    }
     alert(editingProblemId ? 'Problem updated successfully!' : 'Problem published for all students!');
     handleResetForm();
     setActiveTab('manageProblems');
   };
 
-  const handleRegisterStudentSubmit = (e: React.FormEvent) => {
+  const handleRegisterStudentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStudentError('');
     setStudentSuccess('');
@@ -313,12 +319,12 @@ const input = fs.readFileSync(0, 'utf-8').trim();
       setStudentError('Enter the student username');
       return;
     }
-    if (newStudentPassword.length < 3) {
-      setStudentError('Password must be at least 3 characters long');
+    if (newStudentPassword.length < 8) {
+      setStudentError('Password must be at least 8 characters long');
       return;
     }
 
-    const newStudent: User = {
+    const newStudent: StudentRegistration = {
       handle: cleanHandle,
       password: newStudentPassword,
       rating: Number(newStudentRating) || 1200,
@@ -329,14 +335,18 @@ const input = fs.readFileSync(0, 'utf-8').trim();
       allowedContests: newStudentContests
     };
 
-    const ok = onRegisterStudent(newStudent);
-    if (ok) {
-      setStudentSuccess(`Student "${cleanHandle}" registered successfully! Password: "${newStudentPassword}"`);
-      setNewStudentHandle('');
-      setNewStudentPassword('');
-      setNewStudentRating(1200);
-    } else {
-      setStudentError('A user with this username is already registered!');
+    try {
+      const ok = await onRegisterStudent(newStudent);
+      if (ok) {
+        setStudentSuccess(`Student "${cleanHandle}" registered successfully. Share their password securely.`);
+        setNewStudentHandle('');
+        setNewStudentPassword('');
+        setNewStudentRating(1200);
+      } else {
+        setStudentError('A user with this username is already registered!');
+      }
+    } catch (error) {
+      setStudentError(error instanceof Error ? error.message : 'Unable to register this student.');
     }
   };
 
@@ -835,7 +845,7 @@ const input = fs.readFileSync(0, 'utf-8').trim();
                 <thead>
                   <tr className="bg-slate-100 text-slate-700 font-semibold border-b border-slate-300">
                     <th className="py-2.5 px-3">Student (Handle)</th>
-                    <th className="py-2.5 px-3">Password</th>
+                    <th className="py-2.5 px-3">Password status</th>
                     <th className="py-2.5 px-3 text-center">Rating</th>
                     <th className="py-2.5 px-3 text-center">Contest access</th>
                     <th className="py-2.5 px-3 text-center">Solved</th>
@@ -846,7 +856,7 @@ const input = fs.readFileSync(0, 'utf-8').trim();
                   {users.map(u => (
                     <tr key={u.handle} className="hover:bg-slate-50">
                       <td className="py-2.5 px-3 font-bold text-slate-800">{u.handle}</td>
-                      <td className="py-2.5 px-3 font-mono text-slate-500">{u.password}</td>
+                      <td className="py-2.5 px-3 text-slate-500">Stored securely</td>
                       <td className="py-2.5 px-3 text-center font-mono font-bold text-slate-700">
                         {u.rating}
                       </td>
@@ -1111,7 +1121,7 @@ const input = fs.readFileSync(0, 'utf-8').trim();
             <div>
               <h2 className="font-bold text-slate-800 uppercase">Security and teacher password</h2>
               <p className="text-[11px] text-slate-500">
-                The new master password will be saved in the browser’s local storage
+                The new master password will be stored securely on the LAN server.
               </p>
             </div>
           </div>
@@ -1136,7 +1146,7 @@ const input = fs.readFileSync(0, 'utf-8').trim();
               <input
                 type="password"
                 required
-                placeholder="current password (default: teacher2026)"
+                placeholder="current teacher password"
                 value={oldPassword}
                 onChange={e => setOldPassword(e.target.value)}
                 className="w-full p-2 border border-slate-300 rounded font-mono"
@@ -1145,7 +1155,7 @@ const input = fs.readFileSync(0, 'utf-8').trim();
 
             <div>
               <label className="block font-semibold text-slate-700 mb-1">
-                New master password (at least 4 characters):
+                New master password (at least 12 characters):
               </label>
               <input
                 type="password"
@@ -1179,17 +1189,6 @@ const input = fs.readFileSync(0, 'utf-8').trim();
             </button>
           </form>
 
-          <div className="pt-3 border-t border-slate-200 flex items-center justify-between">
-            <span className="text-[11px] text-slate-500">Forgot it or want to reset it?</span>
-            <button
-              type="button"
-              onClick={handleResetPasswordToDefault}
-              className="text-[11px] text-slate-600 hover:text-red-700 underline flex items-center gap-1 cursor-pointer"
-            >
-              <RefreshCw className="w-3 h-3" />
-              <span>Reset to teacher2026</span>
-            </button>
-          </div>
         </div>
       )}
     </div>
