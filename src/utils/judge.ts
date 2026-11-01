@@ -454,7 +454,7 @@ export async function judgeSubmission(
         totalTests: total,
         timeMs: run.timeMs,
         memoryKb: 2048,
-        errorMessage: 'Превышено ограничение по времени (1.0 с)'
+        errorMessage: 'Time limit exceeded (1.0 s)'
       };
     }
 
@@ -477,11 +477,11 @@ export async function judgeSubmission(
         totalTests: total,
         timeMs: maxTimeMs,
         memoryKb: Math.floor(Math.random() * 800) + 1200,
-        errorMessage: `Неверный ответ на тесте ${i + 1}`,
+        errorMessage: `Wrong answer on test ${i + 1}`,
         sampleFailedDetails: i < sampleTests.length ? {
           input: test.input,
           expected: test.output,
-          actual: run.output || '(пустой вывод)'
+          actual: run.output || '(empty output)'
         } : undefined
       };
     }

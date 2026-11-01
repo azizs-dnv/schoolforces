@@ -28,7 +28,7 @@ export const SubmissionModal: React.FC<SubmissionModalProps> = ({ submission, on
           <div className="flex items-center gap-2">
             <FileCode2 className="w-4 h-4" />
             <span className="font-bold text-xs uppercase tracking-wider">
-              Посылка #{submission.id} — {submission.problemId}. {submission.problemTitle}
+              Submission #{submission.id} — {submission.problemId}. {submission.problemTitle}
             </span>
           </div>
           <button onClick={onClose} className="text-slate-200 hover:text-white cursor-pointer">
@@ -39,22 +39,22 @@ export const SubmissionModal: React.FC<SubmissionModalProps> = ({ submission, on
         {/* Submission Details Bar */}
         <div className="bg-slate-50 px-4 py-2.5 border-b border-slate-200 grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
           <div>
-            <span className="text-slate-500">Автор:</span>{' '}
+            <span className="text-slate-500">Author:</span>{' '}
             <span className="font-bold text-slate-800">{submission.handle}</span>
           </div>
           <div>
-            <span className="text-slate-500">Язык:</span>{' '}
+            <span className="text-slate-500">Language:</span>{' '}
             <span className="font-semibold text-slate-800">
               {submission.language === 'javascript' ? 'JavaScript' : 'Python 3'}
             </span>
           </div>
           <div>
-            <span className="text-slate-500">Время:</span>{' '}
-            <span className="font-mono text-slate-800">{submission.timeMs} мс</span>
+            <span className="text-slate-500">Time:</span>{' '}
+            <span className="font-mono text-slate-800">{submission.timeMs} ms</span>
           </div>
           <div>
-            <span className="text-slate-500">Память:</span>{' '}
-            <span className="font-mono text-slate-800">{submission.memoryKb} КБ</span>
+            <span className="text-slate-500">Memory:</span>{' '}
+            <span className="font-mono text-slate-800">{submission.memoryKb} KB</span>
           </div>
         </div>
 
@@ -64,13 +64,13 @@ export const SubmissionModal: React.FC<SubmissionModalProps> = ({ submission, on
             {isAccepted ? (
               <div className="flex items-center gap-1.5 font-bold font-mono text-sm text-emerald-700 bg-emerald-50 px-3 py-1 rounded border border-emerald-300">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                <span>Accepted (тесты: {submission.passedTests}/{submission.totalTests})</span>
+                <span>Accepted (tests: {submission.passedTests}/{submission.totalTests})</span>
               </div>
             ) : (
               <div className="flex items-center gap-1.5 font-bold font-mono text-sm text-red-700 bg-red-50 px-3 py-1 rounded border border-red-300">
                 <XCircle className="w-4 h-4 text-red-600" />
                 <span>
-                  {submission.verdict} на тесте {submission.testFailed}
+                  {submission.verdict} on test {submission.testFailed}
                 </span>
               </div>
             )}
@@ -83,12 +83,12 @@ export const SubmissionModal: React.FC<SubmissionModalProps> = ({ submission, on
             {copied ? (
               <>
                 <Check className="w-3.5 h-3.5 text-emerald-600" />
-                <span className="text-emerald-700 font-bold">Скопировано!</span>
+                <span className="text-emerald-700 font-bold">Copied!</span>
               </>
             ) : (
               <>
                 <Copy className="w-3.5 h-3.5" />
-                <span>Скопировать код</span>
+                <span>Copy code</span>
               </>
             )}
           </button>
@@ -105,7 +105,7 @@ export const SubmissionModal: React.FC<SubmissionModalProps> = ({ submission, on
             onClick={onClose}
             className="px-3 py-1 text-xs font-semibold rounded bg-slate-200 hover:bg-slate-300 text-slate-700 transition cursor-pointer"
           >
-            Закрыть
+            Close
           </button>
         </div>
       </div>

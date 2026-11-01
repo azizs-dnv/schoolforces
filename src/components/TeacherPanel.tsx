@@ -59,15 +59,15 @@ export const TeacherPanel: React.FC<TeacherPanelProps> = ({
     return (
       <div className="bg-red-50 border-2 border-red-500 rounded p-6 text-center max-w-lg mx-auto shadow-md">
         <ShieldAlert className="w-10 h-10 text-red-600 mx-auto mb-2" />
-        <h2 className="text-lg font-bold text-red-800">Доступ запрещён!</h2>
+        <h2 className="text-lg font-bold text-red-800">Access denied!</h2>
         <p className="text-xs text-red-700 mt-2">
-          У вас нет действующей сессии учителя. Переход по прямым ссылкам заблокирован.
+          You do not have an active teacher session. Direct-link access is blocked.
         </p>
         <button
           onClick={onExitTeacherMode}
           className="mt-4 px-4 py-2 bg-red-700 hover:bg-red-800 text-white font-bold rounded text-xs cursor-pointer"
         >
-          Вернуться на главную страницу
+          Return to the home page
         </button>
       </div>
     );
@@ -94,28 +94,28 @@ export const TeacherPanel: React.FC<TeacherPanelProps> = ({
     setPwdMsg(null);
     const currentMaster = getTeacherPassword();
     if (oldPassword !== currentMaster) {
-      setPwdMsg({ text: 'Неверно указан текущий пароль учителя!', isError: true });
+      setPwdMsg({ text: 'The current teacher password is incorrect!', isError: true });
       return;
     }
     if (newPassword.length < 4) {
-      setPwdMsg({ text: 'Новый пароль должен содержать минимум 4 символа!', isError: true });
+      setPwdMsg({ text: 'The new password must be at least 4 characters long!', isError: true });
       return;
     }
     if (newPassword !== confirmNewPassword) {
-      setPwdMsg({ text: 'Новые пароли не совпадают!', isError: true });
+      setPwdMsg({ text: 'The new passwords do not match!', isError: true });
       return;
     }
     localStorage.setItem(TEACHER_PASSWORD_STORAGE_KEY, newPassword);
     setOldPassword('');
     setNewPassword('');
     setConfirmNewPassword('');
-    setPwdMsg({ text: 'Мастер-пароль учителя успешно изменён и сохранён!', isError: false });
+    setPwdMsg({ text: 'Teacher master password changed and saved successfully!', isError: false });
   };
 
   const handleResetPasswordToDefault = () => {
-    if (confirm('Сбросить пароль учителя к стандартному значению "teacher2026"?')) {
+    if (confirm('Reset the teacher password to the default "teacher2026"?')) {
       localStorage.removeItem(TEACHER_PASSWORD_STORAGE_KEY);
-      setPwdMsg({ text: 'Пароль сброшен к стандартному "teacher2026".', isError: false });
+      setPwdMsg({ text: 'Password reset to the default "teacher2026".', isError: false });
     }
   };
 
@@ -124,9 +124,9 @@ export const TeacherPanel: React.FC<TeacherPanelProps> = ({
   const [problemId, setProblemId] = useState<string>('F');
   const [title, setTitle] = useState('');
   const [difficulty, setDifficulty] = useState<number>(800);
-  const [tags, setTags] = useState('школьные, базовая логика');
-  const [timeLimit, setTimeLimit] = useState('1.0 секунда');
-  const [memoryLimit, setMemoryLimit] = useState('256 мегабайт');
+  const [tags, setTags] = useState('school, basic logic');
+  const [timeLimit, setTimeLimit] = useState('1.0 seconds');
+  const [memoryLimit, setMemoryLimit] = useState('256 megabytes');
   const [statement, setStatement] = useState('');
   const [inputFormat, setInputFormat] = useState('');
   const [outputFormat, setOutputFormat] = useState('');
@@ -148,11 +148,11 @@ export const TeacherPanel: React.FC<TeacherPanelProps> = ({
   const handleCreateContestSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!contestTitle.trim()) {
-      alert('Укажите название олимпиады!');
+      alert('Enter a contest name!');
       return;
     }
     if (contestSelectedProbs.length === 0) {
-      alert('Выберите хотя бы одну задачу для олимпиады!');
+      alert('Select at least one problem for the contest!');
       return;
     }
 
@@ -160,17 +160,17 @@ export const TeacherPanel: React.FC<TeacherPanelProps> = ({
     const newContest: Contest = {
       id: newContestId,
       title: contestTitle.trim(),
-      description: contestDesc.trim() || 'Школьное соревнование по программированию',
+      description: contestDesc.trim() || 'School programming contest',
       durationMinutes: Number(contestDuration) || 120,
       status: 'upcoming',
       problemIds: contestSelectedProbs,
       allowedStudents: contestAllowAll ? ['*'] : contestSelectedStudents,
       hideCodeDuringContest: true,
-      author: 'Учитель информатики'
+      author: 'Computer science teacher'
     };
 
     onSaveContest(newContest);
-    alert(`Олимпиада "${contestTitle.trim()}" успешно создана! Вы можете запустить её в любое время.`);
+    alert(`Contest "${contestTitle.trim()}" created successfully! You can start it at any time.`);
     setContestTitle('');
     setContestDesc('');
     setContestDuration(120);
@@ -184,7 +184,7 @@ export const TeacherPanel: React.FC<TeacherPanelProps> = ({
 
   const handleRemoveTestCase = (index: number) => {
     if (testCases.length <= 1) {
-      alert('В задаче должен быть хотя бы один тест!');
+      alert('The problem must have at least one test!');
       return;
     }
     setTestCases(prev => prev.filter((_, i) => i !== index));
@@ -222,9 +222,9 @@ export const TeacherPanel: React.FC<TeacherPanelProps> = ({
     setProblemId(String.fromCharCode(65 + problems.length)); // Next letter
     setTitle('');
     setDifficulty(800);
-    setTags('школьные');
-    setTimeLimit('1.0 секунда');
-    setMemoryLimit('256 мегабайт');
+    setTags('school');
+    setTimeLimit('1.0 seconds');
+    setMemoryLimit('256 megabytes');
     setStatement('');
     setInputFormat('');
     setOutputFormat('');
@@ -237,12 +237,12 @@ export const TeacherPanel: React.FC<TeacherPanelProps> = ({
   const handlePublishProblem = (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim()) {
-      alert('Укажите название задачи!');
+      alert('Enter a problem title!');
       return;
     }
 
     if (testCases.some(t => !t.input.trim() || !t.output.trim())) {
-      alert('Все добавленные тесты должны содержать непустые входные данные и ожидаемый ответ!');
+      alert('Every test must have non-empty input and an expected output!');
       return;
     }
 
@@ -260,7 +260,7 @@ export const TeacherPanel: React.FC<TeacherPanelProps> = ({
       }));
 
     if (sampleTests.length === 0) {
-      alert('Укажите хотя бы один тест как пример (Sample)!');
+      alert('Mark at least one test as a sample!');
       return;
     }
 
@@ -284,21 +284,21 @@ export const TeacherPanel: React.FC<TeacherPanelProps> = ({
 using namespace std;
 
 int main() {
-    // Решение задачи "${title.trim()}"
+    // Solution to the problem "${title.trim()}"
     return 0;
 }`,
-        python: `# Решение задачи "${title.trim()}"
+        python: `# Solution to the problem "${title.trim()}"
 `,
         javascript: `const fs = require('fs');
 const input = fs.readFileSync(0, 'utf-8').trim();
 `
       },
-      author: 'Учитель информатики',
+      author: 'Computer science teacher',
       createdAt: new Date().toISOString().split('T')[0]
     };
 
     onSaveProblem(newProblem);
-    alert(editingProblemId ? 'Задача успешно обновлена!' : 'Задача успешно опубликована для всех учеников!');
+    alert(editingProblemId ? 'Problem updated successfully!' : 'Problem published for all students!');
     handleResetForm();
     setActiveTab('manageProblems');
   };
@@ -310,11 +310,11 @@ const input = fs.readFileSync(0, 'utf-8').trim();
 
     const cleanHandle = newStudentHandle.trim();
     if (!cleanHandle) {
-      setStudentError('Введите логин ученика');
+      setStudentError('Enter the student username');
       return;
     }
     if (newStudentPassword.length < 3) {
-      setStudentError('Пароль должен быть не менее 3 символов');
+      setStudentError('Password must be at least 3 characters long');
       return;
     }
 
@@ -331,12 +331,12 @@ const input = fs.readFileSync(0, 'utf-8').trim();
 
     const ok = onRegisterStudent(newStudent);
     if (ok) {
-      setStudentSuccess(`Ученик "${cleanHandle}" успешно зарегистрирован! Пароль: "${newStudentPassword}"`);
+      setStudentSuccess(`Student "${cleanHandle}" registered successfully! Password: "${newStudentPassword}"`);
       setNewStudentHandle('');
       setNewStudentPassword('');
       setNewStudentRating(1200);
     } else {
-      setStudentError('Пользователь с таким никнеймом уже зарегистрирован!');
+      setStudentError('A user with this username is already registered!');
     }
   };
 
@@ -348,10 +348,10 @@ const input = fs.readFileSync(0, 'utf-8').trim();
           <ShieldAlert className="w-5 h-5 text-amber-300" />
           <div>
             <h1 className="font-bold text-sm tracking-wide uppercase">
-              Панель управления учителя (Защищённый режим)
+              Teacher control panel (secure mode)
             </h1>
             <p className="text-[11px] text-red-200">
-              Создание задач, динамический конструктор тестов и централизованная регистрация учеников
+              Create problems, build tests, and manage student registration
             </p>
           </div>
         </div>
@@ -361,7 +361,7 @@ const input = fs.readFileSync(0, 'utf-8').trim();
           className="flex items-center gap-1.5 px-3 py-1.5 bg-red-900 hover:bg-red-950 text-white rounded text-xs font-semibold transition border border-red-700 cursor-pointer self-start sm:self-auto"
         >
           <LogOut className="w-3.5 h-3.5" />
-          <span>Выйти из учительской</span>
+          <span>Sign out of teacher panel</span>
         </button>
       </div>
 
@@ -376,7 +376,7 @@ const input = fs.readFileSync(0, 'utf-8').trim();
           }`}
         >
           <Plus className="w-4 h-4" />
-          <span>{editingProblemId ? 'Редактировать задачу' : 'Конструктор новой задачи'}</span>
+          <span>{editingProblemId ? 'Edit problem' : 'New problem builder'}</span>
         </button>
 
         <button
@@ -388,7 +388,7 @@ const input = fs.readFileSync(0, 'utf-8').trim();
           }`}
         >
           <BookOpen className="w-4 h-4" />
-          <span>Все задачи ({problems.length})</span>
+          <span>All problems ({problems.length})</span>
         </button>
 
         <button
@@ -400,7 +400,7 @@ const input = fs.readFileSync(0, 'utf-8').trim();
           }`}
         >
           <Users className="w-4 h-4" />
-          <span>Регистрация и ученики ({users.length})</span>
+          <span>Registration and students ({users.length})</span>
         </button>
 
         <button
@@ -412,7 +412,7 @@ const input = fs.readFileSync(0, 'utf-8').trim();
           }`}
         >
           <Trophy className="w-4 h-4" />
-          <span>Олимпиады / Контесты ({contests.length})</span>
+          <span>Contests ({contests.length})</span>
         </button>
 
         <button
@@ -424,16 +424,16 @@ const input = fs.readFileSync(0, 'utf-8').trim();
           }`}
         >
           <Lock className="w-4 h-4" />
-          <span>Смена пароля учителя</span>
+          <span>Change teacher password</span>
         </button>
       </div>
 
-      {/* TAB 1: Конструктор задачи */}
+      {/* TAB 1: Problem builder */}
       {activeTab === 'createProblem' && (
         <form onSubmit={handlePublishProblem} className="bg-white border border-[#b9c0c7] rounded p-6 shadow-2xs space-y-5 text-xs">
           <div className="flex items-center justify-between border-b border-slate-200 pb-3">
             <h2 className="text-sm font-bold text-slate-800 uppercase">
-              {editingProblemId ? `Редактирование задачи ${editingProblemId}` : 'Создание олимпиадной задачи'}
+              {editingProblemId ? `Edit problem ${editingProblemId}` : 'Create contest problem'}
             </h2>
             {editingProblemId && (
               <button
@@ -441,14 +441,14 @@ const input = fs.readFileSync(0, 'utf-8').trim();
                 onClick={handleResetForm}
                 className="text-xs text-blue-700 hover:underline cursor-pointer"
               >
-                Отменить редактирование
+                Cancel editing
               </button>
             )}
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
             <div>
-              <label className="block font-semibold text-slate-700 mb-1">Буква / ID задачи:</label>
+              <label className="block font-semibold text-slate-700 mb-1">Problem letter / ID:</label>
               <input
                 type="text"
                 required
@@ -461,25 +461,25 @@ const input = fs.readFileSync(0, 'utf-8').trim();
             </div>
 
             <div className="sm:col-span-2">
-              <label className="block font-semibold text-slate-700 mb-1">Название задачи:</label>
+              <label className="block font-semibold text-slate-700 mb-1">Problem title:</label>
               <input
                 type="text"
                 required
                 value={title}
                 onChange={e => setTitle(e.target.value)}
                 className="w-full p-2 border border-slate-300 rounded font-semibold text-slate-800"
-                placeholder="например: Простые делители числа"
+                placeholder="e.g., Prime factors of a number"
               />
             </div>
 
             <div>
-              <label className="block font-semibold text-slate-700 mb-1">Сложность (Рейтинг):</label>
+              <label className="block font-semibold text-slate-700 mb-1">Difficulty (rating):</label>
               <select
                 value={difficulty}
                 onChange={e => setDifficulty(Number(e.target.value))}
                 className="w-full p-2 border border-slate-300 rounded font-bold text-slate-800 bg-white"
               >
-                <option value={800}>*800 (Базовый)</option>
+                <option value={800}>*800 (Beginner)</option>
                 <option value={900}>*900</option>
                 <option value={1000}>*1000</option>
                 <option value={1100}>*1100</option>
@@ -492,17 +492,17 @@ const input = fs.readFileSync(0, 'utf-8').trim();
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className="block font-semibold text-slate-700 mb-1">Теги через запятую:</label>
+              <label className="block font-semibold text-slate-700 mb-1">Tags, separated by commas:</label>
               <input
                 type="text"
                 value={tags}
                 onChange={e => setTags(e.target.value)}
                 className="w-full p-2 border border-slate-300 rounded"
-                placeholder="строки, математика, 900"
+                placeholder="strings, math, 900"
               />
             </div>
             <div>
-              <label className="block font-semibold text-slate-700 mb-1">Ограничение времени:</label>
+              <label className="block font-semibold text-slate-700 mb-1">Time limit:</label>
               <input
                 type="text"
                 value={timeLimit}
@@ -511,7 +511,7 @@ const input = fs.readFileSync(0, 'utf-8').trim();
               />
             </div>
             <div>
-              <label className="block font-semibold text-slate-700 mb-1">Ограничение памяти:</label>
+              <label className="block font-semibold text-slate-700 mb-1">Memory limit:</label>
               <input
                 type="text"
                 value={memoryLimit}
@@ -522,39 +522,39 @@ const input = fs.readFileSync(0, 'utf-8').trim();
           </div>
 
           <div>
-            <label className="block font-semibold text-slate-700 mb-1">Условие задачи (текст):</label>
+            <label className="block font-semibold text-slate-700 mb-1">Problem statement:</label>
             <textarea
               required
               rows={4}
               value={statement}
               onChange={e => setStatement(e.target.value)}
               className="w-full p-2.5 border border-slate-300 rounded font-sans leading-relaxed"
-              placeholder="Опишите легенду и требование задачи..."
+              placeholder="Describe the problem context and requirements..."
             />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block font-semibold text-slate-700 mb-1">Формат входных данных:</label>
+              <label className="block font-semibold text-slate-700 mb-1">Input format:</label>
               <textarea
                 required
                 rows={2}
                 value={inputFormat}
                 onChange={e => setInputFormat(e.target.value)}
                 className="w-full p-2 border border-slate-300 rounded"
-                placeholder="В первой строке задано целое число N..."
+                placeholder="The first line contains an integer N..."
               />
             </div>
 
             <div>
-              <label className="block font-semibold text-slate-700 mb-1">Формат выходных данных:</label>
+              <label className="block font-semibold text-slate-700 mb-1">Output format:</label>
               <textarea
                 required
                 rows={2}
                 value={outputFormat}
                 onChange={e => setOutputFormat(e.target.value)}
                 className="w-full p-2 border border-slate-300 rounded"
-                placeholder="Выведите ответ на задачу..."
+                placeholder="Print the answer..."
               />
             </div>
           </div>
@@ -564,10 +564,10 @@ const input = fs.readFileSync(0, 'utf-8').trim();
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="font-bold text-slate-800 uppercase tracking-wide">
-                  Конструктор тестов для автоматического чекера
+                  Test builder for the automatic checker
                 </h3>
                 <p className="text-[11px] text-slate-500">
-                  Добавьте тесты для проверки. Скрытые тесты автоматически защищаются хэшем и скрыты от учеников в F12.
+                  Add tests for evaluation. Hidden tests are protected with hashes and are not exposed to students through browser developer tools.
                 </p>
               </div>
               <button
@@ -576,7 +576,7 @@ const input = fs.readFileSync(0, 'utf-8').trim();
                 className="flex items-center gap-1 px-3 py-1.5 bg-blue-700 hover:bg-blue-800 text-white rounded font-bold cursor-pointer transition shadow-2xs"
               >
                 <Plus className="w-3.5 h-3.5" />
-                <span>+ Добавить тест</span>
+                <span>+ Add test</span>
               </button>
             </div>
 
@@ -584,7 +584,7 @@ const input = fs.readFileSync(0, 'utf-8').trim();
               {testCases.map((tc, idx) => (
                 <div key={idx} className="p-3 bg-white border border-slate-200 rounded shadow-2xs space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="font-bold text-slate-700">Тест #{idx + 1}</span>
+                    <span className="font-bold text-slate-700">Test #{idx + 1}</span>
                     <div className="flex items-center gap-3">
                       <label className="flex items-center gap-1.5 cursor-pointer text-[11px] font-semibold text-slate-600">
                         <input
@@ -593,13 +593,13 @@ const input = fs.readFileSync(0, 'utf-8').trim();
                           onChange={e => handleTestCaseChange(idx, 'isSample', e.target.checked)}
                           className="rounded text-blue-600"
                         />
-                        <span>Показывать в условии (Пример)</span>
+                        <span>Show in statement (sample)</span>
                       </label>
                       <button
                         type="button"
                         onClick={() => handleRemoveTestCase(idx)}
                         className="text-red-600 hover:text-red-800 p-1 cursor-pointer"
-                        title="Удалить тест"
+                        title="Delete test"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
@@ -609,7 +609,7 @@ const input = fs.readFileSync(0, 'utf-8').trim();
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div>
                       <span className="text-[10px] uppercase font-bold text-slate-500 block mb-0.5">
-                        Входные данные (stdin):
+                        Input (stdin):
                       </span>
                       <textarea
                         rows={2}
@@ -617,13 +617,13 @@ const input = fs.readFileSync(0, 'utf-8').trim();
                         value={tc.input}
                         onChange={e => handleTestCaseChange(idx, 'input', e.target.value)}
                         className="w-full font-mono text-xs p-2 border border-slate-300 rounded bg-slate-50"
-                        placeholder="Например: 5 10"
+                        placeholder="e.g., 5 10"
                       />
                     </div>
 
                     <div>
                       <span className="text-[10px] uppercase font-bold text-slate-500 block mb-0.5">
-                        Ожидаемый ответ (stdout):
+                        Expected output (stdout):
                       </span>
                       <textarea
                         rows={2}
@@ -631,7 +631,7 @@ const input = fs.readFileSync(0, 'utf-8').trim();
                         value={tc.output}
                         onChange={e => handleTestCaseChange(idx, 'output', e.target.value)}
                         className="w-full font-mono text-xs p-2 border border-slate-300 rounded bg-slate-50"
-                        placeholder="Например: 15"
+                        placeholder="e.g., 15"
                       />
                     </div>
                   </div>
@@ -646,18 +646,18 @@ const input = fs.readFileSync(0, 'utf-8').trim();
               className="w-full py-3 px-4 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded text-sm tracking-wide transition shadow-sm cursor-pointer flex items-center justify-center gap-2"
             >
               <Save className="w-4 h-4" />
-              <span>{editingProblemId ? 'Сохранить изменения' : 'Опубликовать задачу для учеников'}</span>
+              <span>{editingProblemId ? 'Save changes' : 'Publish problem for students'}</span>
             </button>
           </div>
         </form>
       )}
 
-      {/* TAB 2: Управление всеми задачами */}
+      {/* TAB 2: Manage all problems */}
       {activeTab === 'manageProblems' && (
         <div className="bg-white border border-[#b9c0c7] rounded overflow-hidden shadow-2xs">
           <div className="bg-[#e1e7ee] px-4 py-2.5 border-b border-[#b9c0c7] flex items-center justify-between">
             <span className="font-bold text-xs uppercase text-slate-800">
-              Список всех опубликованных задач ({problems.length})
+              All published problems ({problems.length})
             </span>
           </div>
 
@@ -666,10 +666,10 @@ const input = fs.readFileSync(0, 'utf-8').trim();
               <thead>
                 <tr className="bg-slate-100 text-slate-700 font-semibold border-b border-slate-300">
                   <th className="py-2.5 px-3 text-center w-12">#</th>
-                  <th className="py-2.5 px-4">Название</th>
-                  <th className="py-2.5 px-3 text-center">Сложность</th>
-                  <th className="py-2.5 px-3 text-center">Тестов</th>
-                  <th className="py-2.5 px-4 text-right">Действия</th>
+                  <th className="py-2.5 px-4">Name</th>
+                  <th className="py-2.5 px-3 text-center">Difficulty</th>
+                  <th className="py-2.5 px-3 text-center">Tests</th>
+                  <th className="py-2.5 px-4 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200">
@@ -691,18 +691,18 @@ const input = fs.readFileSync(0, 'utf-8').trim();
                         className="inline-flex items-center gap-1 px-2.5 py-1 bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 rounded font-semibold transition cursor-pointer"
                       >
                         <Edit3 className="w-3 h-3" />
-                        <span>Изменить</span>
+                        <span>Edit</span>
                       </button>
                       <button
                         onClick={() => {
-                          if (confirm(`Удалить задачу "${prob.id}. ${prob.title}"?`)) {
+                          if (confirm(`Delete problem "${prob.id}. ${prob.title}"?`)) {
                             onDeleteProblem(prob.id);
                           }
                         }}
                         className="inline-flex items-center gap-1 px-2.5 py-1 bg-red-50 text-red-700 hover:bg-red-100 border border-red-200 rounded font-semibold transition cursor-pointer"
                       >
                         <Trash2 className="w-3 h-3" />
-                        <span>Удалить</span>
+                        <span>Delete</span>
                       </button>
                     </td>
                   </tr>
@@ -713,18 +713,18 @@ const input = fs.readFileSync(0, 'utf-8').trim();
         </div>
       )}
 
-      {/* TAB 3: Регистрация учеников учителем */}
+      {/* TAB 3: Teacher-managed student registration */}
       {activeTab === 'students' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Регистрация нового ученика */}
+          {/* Register a new student */}
           <div className="bg-white border border-[#b9c0c7] rounded p-5 shadow-2xs space-y-4 text-xs">
             <div className="flex items-center gap-2 border-b border-slate-200 pb-2">
               <UserPlus className="w-4 h-4 text-emerald-700" />
-              <h2 className="font-bold text-slate-800 uppercase">Регистрация нового ученика</h2>
+              <h2 className="font-bold text-slate-800 uppercase">Register a new student</h2>
             </div>
 
             <p className="text-slate-500 leading-relaxed">
-              Самостоятельная регистрация учеников на платформе отключена в целях безопасности. Выдайте логин и пароль ученику для входа.
+              Student self-registration is disabled for security. Give students a username and password to sign in.
             </p>
 
             {studentError && (
@@ -741,11 +741,11 @@ const input = fs.readFileSync(0, 'utf-8').trim();
 
             <form onSubmit={handleRegisterStudentSubmit} className="space-y-3">
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">Никнейм (Handle):</label>
+                <label className="block font-semibold text-slate-700 mb-1">Username (handle):</label>
                 <input
                   type="text"
                   required
-                  placeholder="например: misha_school"
+                  placeholder="e.g., misha_school"
                   value={newStudentHandle}
                   onChange={e => setNewStudentHandle(e.target.value)}
                   className="w-full p-2 border border-slate-300 rounded"
@@ -753,11 +753,11 @@ const input = fs.readFileSync(0, 'utf-8').trim();
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">Пароль для ученика:</label>
+                <label className="block font-semibold text-slate-700 mb-1">Student password:</label>
                 <input
                   type="text"
                   required
-                  placeholder="пароль (например: school123)"
+                  placeholder="password (e.g., school123)"
                   value={newStudentPassword}
                   onChange={e => setNewStudentPassword(e.target.value)}
                   className="w-full p-2 border border-slate-300 rounded font-mono"
@@ -765,7 +765,7 @@ const input = fs.readFileSync(0, 'utf-8').trim();
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">Начальный рейтинг:</label>
+                <label className="block font-semibold text-slate-700 mb-1">Initial rating:</label>
                 <input
                   type="number"
                   required
@@ -776,7 +776,7 @@ const input = fs.readFileSync(0, 'utf-8').trim();
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">Доступ к олимпиадам:</label>
+                <label className="block font-semibold text-slate-700 mb-1">Contest access:</label>
                 <div className="space-y-1.5 p-2 bg-slate-50 border border-slate-200 rounded">
                   <label className="flex items-center gap-1.5 font-bold text-slate-800 cursor-pointer">
                     <input
@@ -787,7 +787,7 @@ const input = fs.readFileSync(0, 'utf-8').trim();
                         else setNewStudentContests([]);
                       }}
                     />
-                    <span>Доступ ко всем олимпиадам (*)</span>
+                    <span>Access to all contests (*)</span>
                   </label>
                   {!newStudentContests.includes('*') && (
                     <div className="pl-4 space-y-1 pt-1 border-t border-slate-200">
@@ -817,16 +817,16 @@ const input = fs.readFileSync(0, 'utf-8').trim();
                 className="w-full py-2 px-3 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded transition cursor-pointer flex items-center justify-center gap-1.5"
               >
                 <UserPlus className="w-3.5 h-3.5" />
-                <span>Зарегистрировать ученика</span>
+                <span>Register student</span>
               </button>
             </form>
           </div>
 
-          {/* Список учеников */}
+          {/* Student list */}
           <div className="lg:col-span-2 bg-white border border-[#b9c0c7] rounded overflow-hidden shadow-2xs">
             <div className="bg-[#e1e7ee] px-4 py-2.5 border-b border-[#b9c0c7] flex items-center justify-between text-xs">
               <span className="font-bold uppercase text-slate-800">
-                Зарегистрированные ученики ({users.length})
+                Registered students ({users.length})
               </span>
             </div>
 
@@ -834,12 +834,12 @@ const input = fs.readFileSync(0, 'utf-8').trim();
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
                   <tr className="bg-slate-100 text-slate-700 font-semibold border-b border-slate-300">
-                    <th className="py-2.5 px-3">Ученик (Handle)</th>
-                    <th className="py-2.5 px-3">Пароль</th>
-                    <th className="py-2.5 px-3 text-center">Рейтинг</th>
-                    <th className="py-2.5 px-3 text-center">Допуск к контестам</th>
-                    <th className="py-2.5 px-3 text-center">Решено</th>
-                    <th className="py-2.5 px-3 text-right">Удалить</th>
+                    <th className="py-2.5 px-3">Student (Handle)</th>
+                    <th className="py-2.5 px-3">Password</th>
+                    <th className="py-2.5 px-3 text-center">Rating</th>
+                    <th className="py-2.5 px-3 text-center">Contest access</th>
+                    <th className="py-2.5 px-3 text-center">Solved</th>
+                    <th className="py-2.5 px-3 text-right">Delete</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200">
@@ -852,9 +852,9 @@ const input = fs.readFileSync(0, 'utf-8').trim();
                       </td>
                       <td className="py-2.5 px-3 text-center text-[10px] text-slate-600">
                         {(!u.allowedContests || u.allowedContests.includes('*')) ? (
-                          <span className="text-emerald-700 font-bold">Все (*)</span>
+                          <span className="text-emerald-700 font-bold">All (*)</span>
                         ) : (
-                          <span>{u.allowedContests.length} контест(ов)</span>
+                          <span>{u.allowedContests.length} contest(s)</span>
                         )}
                       </td>
                       <td className="py-2.5 px-3 text-center font-mono text-emerald-700 font-bold">
@@ -863,12 +863,12 @@ const input = fs.readFileSync(0, 'utf-8').trim();
                       <td className="py-2.5 px-3 text-right">
                         <button
                           onClick={() => {
-                            if (confirm(`Удалить аккаунт ученика ${u.handle}?`)) {
+                            if (confirm(`Delete student account ${u.handle}?`)) {
                               onDeleteStudent(u.handle);
                             }
                           }}
                           className="p-1 text-slate-400 hover:text-red-700 transition cursor-pointer"
-                          title="Удалить"
+                          title="Delete"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
@@ -882,23 +882,23 @@ const input = fs.readFileSync(0, 'utf-8').trim();
         </div>
       )}
 
-      {/* TAB 4: Управление олимпиадами / контестами */}
+      {/* TAB 4: Manage contests */}
       {activeTab === 'manageContests' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 text-xs">
-          {/* Форма создания контеста */}
+          {/* Contest creation form */}
           <div className="bg-white border border-[#b9c0c7] rounded p-5 shadow-2xs space-y-4">
             <div className="flex items-center gap-2 border-b border-slate-200 pb-2">
               <Trophy className="w-4 h-4 text-amber-600" />
-              <h2 className="font-bold text-slate-800 uppercase">Создать олимпиаду / Контест</h2>
+              <h2 className="font-bold text-slate-800 uppercase">Create contest</h2>
             </div>
 
             <form onSubmit={handleCreateContestSubmit} className="space-y-3">
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">Название олимпиады:</label>
+                <label className="block font-semibold text-slate-700 mb-1">Contest name:</label>
                 <input
                   type="text"
                   required
-                  placeholder="например: Школьный этап ВсОШ 2026"
+                  placeholder="e.g., 2026 school olympiad round"
                   value={contestTitle}
                   onChange={e => setContestTitle(e.target.value)}
                   className="w-full p-2 border border-slate-300 rounded font-semibold text-slate-800"
@@ -906,10 +906,10 @@ const input = fs.readFileSync(0, 'utf-8').trim();
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">Краткое описание:</label>
+                <label className="block font-semibold text-slate-700 mb-1">Short description:</label>
                 <textarea
                   rows={2}
-                  placeholder="Правила, участники, регламент..."
+                  placeholder="Rules, participants, schedule..."
                   value={contestDesc}
                   onChange={e => setContestDesc(e.target.value)}
                   className="w-full p-2 border border-slate-300 rounded"
@@ -917,7 +917,7 @@ const input = fs.readFileSync(0, 'utf-8').trim();
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">Длительность (в минутах):</label>
+                <label className="block font-semibold text-slate-700 mb-1">Duration (minutes):</label>
                 <input
                   type="number"
                   required
@@ -930,7 +930,7 @@ const input = fs.readFileSync(0, 'utf-8').trim();
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">Задачи олимпиады:</label>
+                <label className="block font-semibold text-slate-700 mb-1">Contest problems:</label>
                 <div className="max-h-36 overflow-y-auto p-2 bg-slate-50 border border-slate-200 rounded space-y-1">
                   {problems.map(p => (
                     <label key={p.id} className="flex items-center gap-2 cursor-pointer text-slate-700">
@@ -951,7 +951,7 @@ const input = fs.readFileSync(0, 'utf-8').trim();
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">Допуск участников:</label>
+                <label className="block font-semibold text-slate-700 mb-1">Participant access:</label>
                 <div className="space-y-1.5 p-2 bg-slate-50 border border-slate-200 rounded">
                   <label className="flex items-center gap-1.5 font-bold text-slate-800 cursor-pointer">
                     <input
@@ -959,7 +959,7 @@ const input = fs.readFileSync(0, 'utf-8').trim();
                       checked={contestAllowAll}
                       onChange={e => setContestAllowAll(e.target.checked)}
                     />
-                    <span>Разрешить всем зарегистрированным ученикам</span>
+                    <span>Allow all registered students</span>
                   </label>
 
                   {!contestAllowAll && (
@@ -990,16 +990,16 @@ const input = fs.readFileSync(0, 'utf-8').trim();
                 className="w-full py-2 px-3 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded transition cursor-pointer flex items-center justify-center gap-1.5 shadow-2xs"
               >
                 <Trophy className="w-3.5 h-3.5" />
-                <span>Создать олимпиаду</span>
+                <span>Create contest</span>
               </button>
             </form>
           </div>
 
-          {/* Список олимпиад */}
+          {/* Contest list */}
           <div className="lg:col-span-2 bg-white border border-[#b9c0c7] rounded overflow-hidden shadow-2xs">
             <div className="bg-[#e1e7ee] px-4 py-2.5 border-b border-[#b9c0c7] flex items-center justify-between text-xs">
               <span className="font-bold uppercase text-slate-800">
-                Созданные олимпиады и контесты ({contests.length})
+                Created contests ({contests.length})
               </span>
             </div>
 
@@ -1007,11 +1007,11 @@ const input = fs.readFileSync(0, 'utf-8').trim();
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
                   <tr className="bg-slate-100 text-slate-700 font-semibold border-b border-slate-300">
-                    <th className="py-2.5 px-3">Олимпиада</th>
-                    <th className="py-2.5 px-3 text-center">Статус</th>
-                    <th className="py-2.5 px-3 text-center">Длительность</th>
-                    <th className="py-2.5 px-3 text-center">Задач</th>
-                    <th className="py-2.5 px-3 text-right">Управление</th>
+                    <th className="py-2.5 px-3">Contest</th>
+                    <th className="py-2.5 px-3 text-center">Status</th>
+                    <th className="py-2.5 px-3 text-center">Duration</th>
+                    <th className="py-2.5 px-3 text-center">Problems</th>
+                    <th className="py-2.5 px-3 text-right">Manage</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200">
@@ -1029,21 +1029,21 @@ const input = fs.readFileSync(0, 'utf-8').trim();
                         <td className="py-3 px-3 text-center">
                           {isRunning ? (
                             <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 border border-emerald-300 rounded font-bold">
-                              🟢 Идёт сейчас
+                              🟢 In progress
                             </span>
                           ) : isUpcoming ? (
                             <span className="px-2 py-0.5 bg-amber-100 text-amber-800 border border-amber-300 rounded font-bold">
-                              🟡 Ожидает старта
+                              🟡 Waiting to start
                             </span>
                           ) : (
                             <span className="px-2 py-0.5 bg-slate-100 text-slate-600 border border-slate-300 rounded">
-                              ⚪ Завершён
+                              ⚪ Ended
                             </span>
                           )}
                         </td>
 
                         <td className="py-3 px-3 text-center font-mono text-slate-600">
-                          {c.durationMinutes} мин
+                          {c.durationMinutes} min
                         </td>
 
                         <td className="py-3 px-3 text-center font-mono font-bold text-slate-700">
@@ -1054,41 +1054,41 @@ const input = fs.readFileSync(0, 'utf-8').trim();
                           {isUpcoming && (
                             <button
                               onClick={() => {
-                                if (confirm(`Запустить соревнование "${c.title}" прямо сейчас?`)) {
+                                if (confirm(`Start contest "${c.title}" now?`)) {
                                   onStartContest(c.id);
                                 }
                               }}
                               className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded font-bold text-[11px] cursor-pointer inline-flex items-center gap-1"
-                              title="Запустить олимпиаду"
+                              title="Start contest"
                             >
                               <Play className="w-3 h-3 fill-white" />
-                              <span>Старт</span>
+                              <span>Start</span>
                             </button>
                           )}
 
                           {isRunning && (
                             <button
                               onClick={() => {
-                                if (confirm(`Завершить соревнование "${c.title}" досрочно?`)) {
+                                if (confirm(`End contest "${c.title}" early?`)) {
                                   onFinishContest(c.id);
                                 }
                               }}
                               className="px-2.5 py-1 bg-red-700 hover:bg-red-800 text-white rounded font-bold text-[11px] cursor-pointer inline-flex items-center gap-1"
-                              title="Завершить олимпиаду"
+                              title="End contest"
                             >
                               <StopCircle className="w-3 h-3" />
-                              <span>Стоп</span>
+                              <span>Stop</span>
                             </button>
                           )}
 
                           <button
                             onClick={() => {
-                              if (confirm(`Удалить олимпиаду "${c.title}"?`)) {
+                              if (confirm(`Delete contest "${c.title}"?`)) {
                                 onDeleteContest(c.id);
                               }
                             }}
                             className="p-1 text-slate-400 hover:text-red-700 transition cursor-pointer inline-block"
-                            title="Удалить"
+                            title="Delete"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>
@@ -1103,15 +1103,15 @@ const input = fs.readFileSync(0, 'utf-8').trim();
         </div>
       )}
 
-      {/* TAB 5: Смена мастер-пароля учителя */}
+      {/* TAB 5: Change teacher master password */}
       {activeTab === 'security' && (
         <div className="max-w-md mx-auto bg-white border border-[#b9c0c7] rounded p-6 shadow-2xs space-y-4 text-xs">
           <div className="flex items-center gap-2 border-b border-slate-200 pb-3">
             <KeyRound className="w-5 h-5 text-red-700" />
             <div>
-              <h2 className="font-bold text-slate-800 uppercase">Безопасность и смена пароля учителя</h2>
+              <h2 className="font-bold text-slate-800 uppercase">Security and teacher password</h2>
               <p className="text-[11px] text-slate-500">
-                Новый мастер-пароль будет сохранён в локальном хранилище браузера
+                The new master password will be saved in the browser’s local storage
               </p>
             </div>
           </div>
@@ -1131,12 +1131,12 @@ const input = fs.readFileSync(0, 'utf-8').trim();
           <form onSubmit={handleChangePassword} className="space-y-3">
             <div>
               <label className="block font-semibold text-slate-700 mb-1">
-                Текущий мастер-пароль:
+                Current master password:
               </label>
               <input
                 type="password"
                 required
-                placeholder="текущий пароль (по умолчанию: teacher2026)"
+                placeholder="current password (default: teacher2026)"
                 value={oldPassword}
                 onChange={e => setOldPassword(e.target.value)}
                 className="w-full p-2 border border-slate-300 rounded font-mono"
@@ -1145,12 +1145,12 @@ const input = fs.readFileSync(0, 'utf-8').trim();
 
             <div>
               <label className="block font-semibold text-slate-700 mb-1">
-                Новый мастер-пароль (не менее 4 символов):
+                New master password (at least 4 characters):
               </label>
               <input
                 type="password"
                 required
-                placeholder="новый секретный пароль"
+                placeholder="new secure password"
                 value={newPassword}
                 onChange={e => setNewPassword(e.target.value)}
                 className="w-full p-2 border border-slate-300 rounded font-mono"
@@ -1159,12 +1159,12 @@ const input = fs.readFileSync(0, 'utf-8').trim();
 
             <div>
               <label className="block font-semibold text-slate-700 mb-1">
-                Повторите новый пароль:
+                Confirm new password:
               </label>
               <input
                 type="password"
                 required
-                placeholder="повтор нового пароля"
+                placeholder="re-enter new password"
                 value={confirmNewPassword}
                 onChange={e => setConfirmNewPassword(e.target.value)}
                 className="w-full p-2 border border-slate-300 rounded font-mono"
@@ -1175,19 +1175,19 @@ const input = fs.readFileSync(0, 'utf-8').trim();
               type="submit"
               className="w-full py-2.5 px-4 bg-red-700 hover:bg-red-800 text-white font-bold rounded transition cursor-pointer shadow-2xs"
             >
-              Сохранить новый пароль
+              Save new password
             </button>
           </form>
 
           <div className="pt-3 border-t border-slate-200 flex items-center justify-between">
-            <span className="text-[11px] text-slate-500">Забыли или хотите вернуть?</span>
+            <span className="text-[11px] text-slate-500">Forgot it or want to reset it?</span>
             <button
               type="button"
               onClick={handleResetPasswordToDefault}
               className="text-[11px] text-slate-600 hover:text-red-700 underline flex items-center gap-1 cursor-pointer"
             >
               <RefreshCw className="w-3 h-3" />
-              <span>Сбросить к teacher2026</span>
+              <span>Reset to teacher2026</span>
             </button>
           </div>
         </div>

@@ -29,12 +29,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
     const cleanHandle = handle.trim();
     if (!cleanHandle) {
-      setError('Введите никнейм (handle)');
+      setError('Enter your username (handle)');
       return;
     }
 
     if (!password) {
-      setError('Введите пароль');
+      setError('Enter your password');
       return;
     }
 
@@ -43,7 +43,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     );
 
     if (!existingUser || existingUser.password !== password) {
-      setError('Неверный никнейм или пароль. Убедитесь, что учитель зарегистрировал ваш аккаунт.');
+      setError('Incorrect username or password. Make sure your teacher has registered your account.');
       return;
     }
 
@@ -64,7 +64,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           <div className="flex items-center gap-2">
             <LogIn className="w-4 h-4" />
             <span className="font-bold text-xs tracking-wide uppercase">
-              Вход ученика в SchoolForces
+              Student sign-in to SchoolForces
             </span>
           </div>
           <button
@@ -77,7 +77,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
         {/* Notice that students are registered exclusively by teachers */}
         <div className="bg-blue-50/70 border-b border-blue-200 px-5 py-2.5 text-xs text-blue-900 flex items-center justify-between">
-          <span>Регистрация учеников выполняется только учителем</span>
+          <span>Students can only be registered by a teacher</span>
           <button
             type="button"
             onClick={() => {
@@ -87,7 +87,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             className="text-[11px] font-bold text-blue-700 hover:underline flex items-center gap-1 cursor-pointer"
           >
             <KeyRound className="w-3 h-3" />
-            <span>Панель учителя</span>
+            <span>Teacher panel</span>
           </button>
         </div>
 
@@ -102,13 +102,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
           <div>
             <label className="block font-semibold text-slate-700 mb-1">
-              Никнейм ученика (Handle):
+              Student username (handle):
             </label>
             <input
               type="text"
               required
               autoFocus
-              placeholder="например: tourist_junior или coder_ivan"
+              placeholder="e.g., tourist_junior or coder_ivan"
               value={handle}
               onChange={e => setHandle(e.target.value)}
               className="w-full text-xs p-2 border border-slate-300 rounded focus:outline-hidden focus:ring-1 focus:ring-blue-600"
@@ -116,7 +116,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           </div>
 
           <div>
-            <label className="block font-semibold text-slate-700 mb-1">Пароль:</label>
+            <label className="block font-semibold text-slate-700 mb-1">Password:</label>
             <input
               type="password"
               required
@@ -131,7 +131,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             type="submit"
             className="w-full py-2.5 px-4 bg-[#3b5998] hover:bg-[#2b4270] text-white font-bold rounded transition shadow-2xs cursor-pointer text-xs"
           >
-            Войти в систему
+            Sign in
           </button>
         </form>
 
@@ -139,7 +139,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         <div className="bg-slate-50 px-5 py-3 border-t border-slate-200 text-xs">
           <div className="font-semibold text-slate-600 mb-2 flex items-center gap-1.5">
             <ShieldCheck className="w-3.5 h-3.5 text-blue-600" />
-            <span>Тестовые аккаунты учеников:</span>
+            <span>Student demo accounts:</span>
           </div>
           <div className="flex flex-wrap gap-1.5">
             {users.slice(0, 4).map(u => (

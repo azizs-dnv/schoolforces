@@ -5,23 +5,23 @@ export const PROBLEMS: Problem[] = [
   {
     id: 'A',
     number: 1,
-    title: 'Сложение A + B',
+    title: 'A + B',
     difficulty: 800,
-    tags: ['школьные', 'арифметика', 'ввод-вывод', '800'],
-    timeLimit: '1.0 секунда',
-    memoryLimit: '256 мегабайт',
+    tags: ['school', 'arithmetic', 'input-output', '800'],
+    timeLimit: '1.0 second',
+    memoryLimit: '256 megabytes',
     statement: [
-      'Вам даны два целых числа $A$ и $B$. Ваша задача — вычислить их сумму и вывести полученный результат.',
-      'Это классическая стартовая задача, позволяющая познакомиться с тестирующей системой SchoolForces и проверить правильность ввода и вывода данных.'
+      'You are given two integers, $A$ and $B$. Your task is to calculate their sum and output the result.',
+      'This classic introductory problem lets you get familiar with the SchoolForces judging system and check that your input and output are handled correctly.'
     ],
     inputFormat: [
-      'Во входном потоке заданы два целых числа $A$ и $B$ ($-10^9 \\le A, B \\le 10^9$). Числа могут быть записаны в одной строке через пробел либо на разных строках.'
+      'The input contains two integers, $A$ and $B$ ($-10^9 \\le A, B \\le 10^9$). They may be given on one line, separated by a space, or on separate lines.'
     ],
     outputFormat: [
-      'Выведите единственное целое число — сумму $A + B$.'
+      'Output a single integer: the sum $A + B$.'
     ],
     note: [
-      'В первом примере $2 + 3 = 5$. Во втором примере $-5 + 10 = 5$.'
+      'In the first example, $2 + 3 = 5$. In the second example, $-5 + 10 = 5$.'
     ],
     sampleTests: [
       { input: '2 3', output: '5' },
@@ -46,7 +46,7 @@ int main() {
     }
     return 0;
 }`,
-      python: `# Считываем два числа и выводим сумму
+      python: `# Read two numbers and output their sum
 a, b = map(int, input().split())
 print(a + b)`,
       javascript: `const fs = require('fs');
@@ -62,23 +62,23 @@ if (tokens.length >= 2) {
   {
     id: 'B',
     number: 2,
-    title: 'Чётное или нечётное',
+    title: 'Even or Odd',
     difficulty: 800,
-    tags: ['школьные', 'условный оператор', '800'],
-    timeLimit: '1.0 секунда',
-    memoryLimit: '256 мегабайт',
+    tags: ['school', 'conditional statements', '800'],
+    timeLimit: '1.0 second',
+    memoryLimit: '256 megabytes',
     statement: [
-      'Юный программист Петя учится проверять числа на делимость. Помогите Пете написать программу, которая определяет чётность заданного целого числа $N$.',
-      'Число считается чётным, если оно делится на 2 без остатка, и нечётным в противном случае.'
+      'Young programmer Petya is learning how to test divisibility. Help him write a program that determines whether the given integer $N$ is even or odd.',
+      'A number is even if it is divisible by 2 with no remainder, and odd otherwise.'
     ],
     inputFormat: [
-      'В единственной строке входных данных записано одно целое число $N$ ($-10^9 \\le N \\le 10^9$).'
+      'The input consists of a single integer $N$ ($-10^9 \\le N \\le 10^9$).'
     ],
     outputFormat: [
-      'Выведите строку "EVEN" (без кавычек), если число $N$ чётное, или строку "ODD", если число нечётное.'
+      'Output "EVEN" (without the quotes) if $N$ is even, or "ODD" if it is odd.'
     ],
     note: [
-      'Число 4 делится на 2, поэтому вывод — EVEN. Число 7 даёт остаток 1 при делении на 2, поэтому ответ ODD.'
+      'The number 4 is divisible by 2, so the output is EVEN. Dividing 7 by 2 leaves a remainder of 1, so the answer is ODD.'
     ],
     sampleTests: [
       { input: '4', output: 'EVEN' },
@@ -124,23 +124,23 @@ if (n % 2 === 0) {
   {
     id: 'C',
     number: 3,
-    title: 'Поиск максимума из трёх чисел',
+    title: 'Find the Maximum of Three Numbers',
     difficulty: 900,
-    tags: ['школьные', 'условия', 'математика', '900'],
-    timeLimit: '1.0 секунда',
-    memoryLimit: '256 мегабайт',
+    tags: ['school', 'conditionals', 'mathematics', '900'],
+    timeLimit: '1.0 second',
+    memoryLimit: '256 megabytes',
     statement: [
-      'На олимпиаде по информатике жюри загадало три целых числа: $A$, $B$ и $C$.',
-      'Школьнику необходимо как можно быстрее найти наибольшее среди этих трёх чисел.'
+      'At an informatics olympiad, the jury has chosen three integers: $A$, $B$, and $C$.',
+      'Find the largest of these three numbers as quickly as you can.'
     ],
     inputFormat: [
-      'Во входных данных записаны три целых числа $A, B, C$ ($-10^9 \\le A, B, C \\le 10^9$), разделённые пробелами.'
+      'The input contains three space-separated integers, $A$, $B$, and $C$ ($-10^9 \\le A, B, C \\le 10^9$).'
     ],
     outputFormat: [
-      'Выведите одно целое число — максимальное из заданных трёх чисел.'
+      'Output a single integer: the largest of the three numbers.'
     ],
     note: [
-      'Среди чисел 3, 7, 2 максимальным является 7.'
+      'The largest of 3, 7, and 2 is 7.'
     ],
     sampleTests: [
       { input: '3 7 2', output: '7' },
@@ -174,23 +174,23 @@ console.log(Math.max(...nums));`
   {
     id: 'D',
     number: 4,
-    title: 'Переворот строки',
+    title: 'Reverse a String',
     difficulty: 1000,
-    tags: ['школьные', 'строки', '1000'],
-    timeLimit: '1.0 секунда',
-    memoryLimit: '256 мегабайт',
+    tags: ['school', 'strings', '1000'],
+    timeLimit: '1.0 second',
+    memoryLimit: '256 megabytes',
     statement: [
-      'Вам дана строка $S$. Требуется вывести эту строку задом наперёд (в обратном порядке символов).',
-      'Например, для строки "codeforces" ответом будет "secrofedoc".'
+      'You are given a string $S$. Output the string in reverse order.',
+      'For example, the reverse of "codeforces" is "secrofedoc".'
     ],
     inputFormat: [
-      'В единственной строке записана непустая строка $S$, состоящая из букв латинского алфавита или цифр. Длина строки не превышает 1000 символов.'
+      'The input consists of a non-empty string $S$ containing only English letters or digits. The string is at most 1000 characters long.'
     ],
     outputFormat: [
-      'Выведите перевёрнутую строку.'
+      'Output the reversed string.'
     ],
     note: [
-      'Входная строка читается целиком и символы выводятся в обратном порядке.'
+      'Read the entire input string and output its characters in reverse order.'
     ],
     sampleTests: [
       { input: 'hello', output: 'olleh' },
@@ -226,20 +226,20 @@ console.log(s.split('').reverse().join(''));`
   {
     id: 'E',
     number: 5,
-    title: 'Факториал числа',
+    title: 'Factorial',
     difficulty: 1100,
-    tags: ['школьные', 'математика', 'циклы', '1100'],
-    timeLimit: '1.0 секунда',
-    memoryLimit: '256 мегабайт',
+    tags: ['school', 'mathematics', 'loops', '1100'],
+    timeLimit: '1.0 second',
+    memoryLimit: '256 megabytes',
     statement: [
-      'Факториалом натурального числа $N$ (обозначается как $N!$) называется произведение всех натуральных чисел от 1 до $N$. По определению, $0! = 1$.',
-      'Дано целое число $N$ ($0 \\le N \\le 15$). Вычислите $N!$.'
+      'The factorial of a non-negative integer $N$, denoted by $N!$, is the product of all integers from 1 to $N$. By definition, $0! = 1$.',
+      'You are given an integer $N$ ($0 \\le N \\le 15$). Calculate $N!$.'
     ],
     inputFormat: [
-      'На вход подаётся одно целое неотрицательное число $N$ ($0 \\le N \\le 15$).'
+      'The input contains a single non-negative integer $N$ ($0 \\le N \\le 15$).'
     ],
     outputFormat: [
-      'Выведите значение $N!$.'
+      'Output the value of $N!$.'
     ],
     note: [
       '$5! = 1 \\times 2 \\times 3 \\times 4 \\times 5 = 120$.'

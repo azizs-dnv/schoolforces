@@ -95,7 +95,7 @@ export default function App() {
   });
 
   // Navigation & View state
-  // Default tab is 'contests' (ОЛИМПИАДЫ - перед вкладкой ЗАДАЧИ)
+  // The default tab is contests, before the problems tab.
   const [activeTab, setActiveTab] = useState<
     'contests' | 'problems' | 'submissions' | 'leaderboard' | 'profile' | 'about' | 'teacher'
   >('contests');
@@ -214,7 +214,7 @@ export default function App() {
     if (tab === 'teacher') {
       const hasToken = sessionStorage.getItem(TEACHER_TOKEN_KEY) !== null;
       if (!hasToken) {
-        showToast('Доступ запрещён! Требуется мастер-пароль учителя.', 'error');
+        showToast('Access denied. The teacher master password is required.', 'error');
         setIsTeacherAuthOpen(true);
         return;
       }
@@ -228,19 +228,19 @@ export default function App() {
   // Auth Handlers for students
   const handleLogin = (user: User) => {
     setCurrentUser(user);
-    showToast(`С возвращением, ${user.handle}! Ваш рейтинг: ${user.rating}`, 'info');
+    showToast(`Welcome back, ${user.handle}! Your rating: ${user.rating}`, 'info');
   };
 
   const handleLogout = () => {
     setCurrentUser(null);
-    showToast('Вы вышли из системы', 'info');
+    showToast('You have been logged out.', 'info');
   };
 
   // Teacher Handlers
   const handleTeacherAuthSuccess = () => {
     setIsTeacherAuthenticated(true);
     setActiveTab('teacher');
-    showToast('Вход в учительскую панель выполнен успешно', 'success');
+    showToast('Successfully signed in to the teacher panel.', 'success');
   };
 
   const handleExitTeacherMode = () => {
@@ -249,7 +249,7 @@ export default function App() {
     if (activeTab === 'teacher') {
       setActiveTab('contests');
     }
-    showToast('Сессия учителя завершена', 'info');
+    showToast('Teacher session ended.', 'info');
   };
 
   // Contest Actions (Teacher Launch, Finish, Save, Delete)
@@ -264,14 +264,14 @@ export default function App() {
         return c;
       })
     );
-    showToast('🚀 Олимпиада запущена! Доступ к задачам открыт для участников.', 'success');
+    showToast('🚀 Contest started! Participants can now access its problems.', 'success');
   };
 
   const handleFinishContest = (contestId: string) => {
     setContests(prev =>
       prev.map(c => (c.id === contestId ? { ...c, status: 'finished' } : c))
     );
-    showToast('Олимпиада завершена. Результаты зафиксированы.', 'info');
+    showToast('Contest ended. Results have been finalized.', 'info');
   };
 
   const handleSaveContest = (contest: Contest) => {
@@ -284,7 +284,7 @@ export default function App() {
       }
       return [contest, ...prev];
     });
-    showToast(`Олимпиада "${contest.title}" сохранена!`, 'success');
+    showToast(`Contest "${contest.title}" saved!`, 'success');
   };
 
   const handleDeleteContest = (contestId: string) => {
@@ -292,7 +292,7 @@ export default function App() {
     if (selectedContest?.id === contestId) {
       setSelectedContest(null);
     }
-    showToast('Олимпиада удалена.', 'info');
+    showToast('Contest deleted.', 'info');
   };
 
   // Problem management
@@ -306,7 +306,7 @@ export default function App() {
       }
       return [...prev, savedProb];
     });
-    showToast(`Задача "${savedProb.id}. ${savedProb.title}" сохранена!`, 'success');
+    showToast(`Problem "${savedProb.id}. ${savedProb.title}" saved!`, 'success');
   };
 
   const handleDeleteProblem = (problemId: string) => {
@@ -314,7 +314,7 @@ export default function App() {
     if (selectedProblem?.id === problemId) {
       setSelectedProblem(null);
     }
-    showToast(`Задача "${problemId}" удалена.`, 'info');
+    showToast(`Problem "${problemId}" deleted.`, 'info');
   };
 
   const handleRegisterStudentByTeacher = (newStudent: User): boolean => {
@@ -329,7 +329,7 @@ export default function App() {
     if (currentUser?.handle === handle) {
       setCurrentUser(null);
     }
-    showToast(`Ученик "${handle}" удалён.`, 'info');
+    showToast(`Student "${handle}" deleted.`, 'info');
   };
 
   // Submission handler from ProblemDetail (with contest context)
@@ -361,7 +361,7 @@ export default function App() {
         solvedProblems: newSolved
       };
 
-      showToast(`🎉 Поздравляем! Задача ${newSub.problemId} решена! Рейтинг: +50 (теперь ${newRating})`, 'success');
+      showToast(`🎉 Congratulations! Problem ${newSub.problemId} solved! Rating: +50 (now ${newRating})`, 'success');
     }
 
     setCurrentUser(updatedUser);
@@ -369,7 +369,7 @@ export default function App() {
   };
 
   const handleResetAllData = () => {
-    if (confirm('Сбросить все олимпиады, задачи и аккаунты к начальным демо-значениям?')) {
+    if (confirm('Reset all contests, problems, and accounts to the initial demo data?')) {
       localStorage.removeItem(STORAGE_KEY_CONTESTS);
       localStorage.removeItem(STORAGE_KEY_USERS);
       localStorage.removeItem(STORAGE_KEY_PROBLEMS);
@@ -385,7 +385,7 @@ export default function App() {
       setSelectedContest(null);
       setSelectedProblem(null);
       setActiveTab('contests');
-      showToast('Все данные сброшены к начальным значениям', 'info');
+      showToast('All data has been reset to the initial values.', 'info');
     }
   };
 
@@ -437,7 +437,7 @@ export default function App() {
 
       {/* Main Content Area */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 flex-1 w-full">
-        {/* 1. ОЛИМПИАДЫ / КОНТЕСТЫ (ПЕРВАЯ ВКЛАДКА) */}
+        {/* 1. CONTESTS (FIRST TAB) */}
         {activeTab === 'contests' && (
           <>
             {activeContestObj ? (
@@ -482,7 +482,7 @@ export default function App() {
           </>
         )}
 
-        {/* 2. ЗАДАЧИ (АРХИВ) */}
+        {/* 2. PROBLEMS (ARCHIVE) */}
         {activeTab === 'problems' && (
           <>
             {selectedProblem ? (
@@ -504,7 +504,7 @@ export default function App() {
           </>
         )}
 
-        {/* 3. ПОСЫЛКИ */}
+        {/* 3. SUBMISSIONS */}
         {activeTab === 'submissions' && (
           <SubmissionsList
             submissions={submissions}
@@ -514,7 +514,7 @@ export default function App() {
           />
         )}
 
-        {/* 4. ТАБЛИЦА ЛИДЕРОВ */}
+        {/* 4. LEADERBOARD */}
         {activeTab === 'leaderboard' && (
           <Leaderboard
             users={users}
@@ -527,7 +527,7 @@ export default function App() {
           />
         )}
 
-        {/* 5. МОЙ ПРОФИЛЬ */}
+        {/* 5. MY PROFILE */}
         {activeTab === 'profile' && (
           <Profile
             currentUser={currentUser}
@@ -542,10 +542,10 @@ export default function App() {
           />
         )}
 
-        {/* 6. О ПЛАТФОРМЕ */}
+        {/* 6. ABOUT THE PLATFORM */}
         {activeTab === 'about' && <AboutView />}
 
-        {/* 7. ПАНЕЛЬ УЧИТЕЛЯ */}
+        {/* 7. TEACHER PANEL */}
         {activeTab === 'teacher' && (
           <TeacherPanel
             problems={problems}
@@ -574,19 +574,19 @@ export default function App() {
               <span className="w-1.5 h-2.5 bg-red-600 rounded-t-xs"></span>
             </div>
             <span className="font-bold text-slate-700">SchoolForces 2.5</span>
-            <span>— Олимпиадная платформа соревнований по программированию (LAN & Offline Ready)</span>
+            <span>— Programming contest platform (LAN &amp; offline ready)</span>
           </div>
 
           <div className="flex items-center gap-4 text-[11px]">
-            <span>ICPC Scoreboard • C++, Python, JS • Таймер контестов</span>
+            <span>ICPC scoreboard • C++, Python, JavaScript • Contest timer</span>
             <span>•</span>
             <button
               onClick={handleResetAllData}
               className="text-slate-500 hover:text-red-600 underline cursor-pointer flex items-center gap-1"
-              title="Сбросить все данные к исходным демо"
+              title="Reset all data to the initial demo values"
             >
               <RefreshCw className="w-3 h-3" />
-              <span>Сбросить демо-данные</span>
+              <span>Reset demo data</span>
             </button>
           </div>
         </div>

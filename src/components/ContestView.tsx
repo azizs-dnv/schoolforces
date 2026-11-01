@@ -62,7 +62,7 @@ export const ContestView: React.FC<ContestViewProps> = ({
       if (contest.status === 'running' && contest.endsAt) {
         const diff = contest.endsAt - Date.now();
         if (diff <= 0) {
-          setTimeRemainingText('Время контеста истекло');
+          setTimeRemainingText('Contest time is up');
         } else {
           const h = Math.floor(diff / 3600000);
           const m = Math.floor((diff % 3600000) / 60000);
@@ -72,9 +72,9 @@ export const ContestView: React.FC<ContestViewProps> = ({
           );
         }
       } else if (contest.status === 'upcoming') {
-        setTimeRemainingText('Ожидает старта');
+        setTimeRemainingText('Waiting to start');
       } else {
-        setTimeRemainingText('Соревнование завершено');
+        setTimeRemainingText('Contest ended');
       }
     };
 
@@ -101,12 +101,12 @@ export const ContestView: React.FC<ContestViewProps> = ({
           className="inline-flex items-center gap-2 text-xs font-semibold text-slate-700 hover:text-blue-700 cursor-pointer"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span>Вернуться ко всем олимпиадам</span>
+          <span>Back to all contests</span>
         </button>
 
         {isTeacherAuthenticated && (
           <span className="text-[11px] font-bold text-red-700 bg-red-50 border border-red-200 px-2.5 py-1 rounded">
-            🔒 Режим учителя: полный доступ и управление
+            🔒 Teacher mode: full access and control
           </span>
         )}
       </div>
@@ -126,10 +126,10 @@ export const ContestView: React.FC<ContestViewProps> = ({
           <div className="bg-[#2b4270] border border-[#4466aa] p-3 rounded text-center self-start md:self-auto min-w-44">
             <div className="text-[10px] uppercase font-bold text-slate-300">
               {contest.status === 'running'
-                ? 'До конца контеста'
+                ? 'Time remaining'
                 : contest.status === 'upcoming'
-                ? 'Статус контеста'
-                : 'Контест'}
+                ? 'Contest status'
+                : 'Contest'}
             </div>
             <div className="text-xl font-mono font-bold text-amber-300 tracking-wider">
               {timeRemainingText}
@@ -141,34 +141,34 @@ export const ContestView: React.FC<ContestViewProps> = ({
         {isTeacherAuthenticated && (
           <div className="bg-red-50 px-5 py-2.5 border-b border-red-200 flex items-center justify-between flex-wrap gap-2 text-xs">
             <span className="font-bold text-red-900">
-              Управление контестом преподавателем:
+              Contest controls for teachers:
             </span>
             <div className="flex items-center gap-2">
               {contest.status === 'upcoming' && onStartContest && (
                 <button
                   onClick={() => {
-                    if (confirm(`Запустить соревнование "${contest.title}"?`)) {
+                    if (confirm(`Start contest "${contest.title}"?`)) {
                       onStartContest(contest.id);
                     }
                   }}
                   className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded flex items-center gap-1 cursor-pointer shadow-2xs"
                 >
                   <Play className="w-3.5 h-3.5 fill-white" />
-                  <span>Запустить олимпиаду сейчас</span>
+                  <span>Start contest now</span>
                 </button>
               )}
 
               {contest.status === 'running' && onFinishContest && (
                 <button
                   onClick={() => {
-                    if (confirm(`Завершить соревнование "${contest.title}" досрочно?`)) {
+                    if (confirm(`End contest "${contest.title}" early?`)) {
                       onFinishContest(contest.id);
                     }
                   }}
                   className="px-3 py-1.5 bg-red-700 hover:bg-red-800 text-white font-bold rounded flex items-center gap-1 cursor-pointer shadow-2xs"
                 >
                   <StopCircle className="w-3.5 h-3.5" />
-                  <span>Завершить соревнование</span>
+                  <span>End contest</span>
                 </button>
               )}
             </div>
@@ -186,7 +186,7 @@ export const ContestView: React.FC<ContestViewProps> = ({
             }`}
           >
             <Code2 className="w-4 h-4" />
-            <span>Задачи олимпиады ({contestProblems.length})</span>
+            <span>Contest problems ({contestProblems.length})</span>
           </button>
 
           <button
@@ -198,7 +198,7 @@ export const ContestView: React.FC<ContestViewProps> = ({
             }`}
           >
             <Trophy className="w-4 h-4" />
-            <span>Таблица лидеров (Scoreboard)</span>
+            <span>Leaderboard (scoreboard)</span>
           </button>
 
           <button
@@ -210,7 +210,7 @@ export const ContestView: React.FC<ContestViewProps> = ({
             }`}
           >
             <FileCode2 className="w-4 h-4" />
-            <span>Посылки контеста ({contestSubmissions.length})</span>
+            <span>Contest submissions ({contestSubmissions.length})</span>
           </button>
         </div>
       </div>
@@ -219,9 +219,9 @@ export const ContestView: React.FC<ContestViewProps> = ({
       {!isAllowed && (
         <div className="bg-red-50 border border-red-300 rounded p-6 text-center space-y-2 max-w-lg mx-auto">
           <Lock className="w-8 h-8 text-red-600 mx-auto" />
-          <h2 className="text-base font-bold text-red-900">Доступ к контесту ограничен</h2>
+          <h2 className="text-base font-bold text-red-900">Contest access restricted</h2>
           <p className="text-xs text-red-700">
-            Учитель не включил ваш аккаунт в список участников этой олимпиады. Обратитесь к преподавателю за допуском.
+            Your account is not on the participant list for this contest. Contact your teacher to request access.
           </p>
         </div>
       )}
@@ -230,22 +230,22 @@ export const ContestView: React.FC<ContestViewProps> = ({
       {isAllowed && contest.status === 'upcoming' && (
         <div className="bg-amber-50 border border-amber-300 rounded p-6 text-center space-y-2">
           <Clock className="w-8 h-8 text-amber-600 mx-auto" />
-          <h2 className="text-base font-bold text-amber-900">Олимпиада ещё не началась</h2>
+          <h2 className="text-base font-bold text-amber-900">The contest has not started yet</h2>
           <p className="text-xs text-amber-800 max-w-md mx-auto">
-            Преподаватель запустит контест со своего рабочего места. Как только олимпиада будет запущена, условия задач и форма отправки решений откроются автоматически!
+            Your teacher will start the contest from their workstation. Once it starts, the problems and submission form will become available automatically.
           </p>
         </div>
       )}
 
-      {/* SUBTAB 1: Задачи олимпиады (доступны после старта или учителю) */}
+      {/* SUBTAB 1: Contest problems (available after start or to teachers) */}
       {isAllowed && (contest.status !== 'upcoming' || isTeacherAuthenticated) && activeSubtab === 'problems' && (
         <div className="bg-white border border-[#b9c0c7] rounded overflow-hidden shadow-2xs">
           <div className="bg-[#e1e7ee] px-4 py-2.5 border-b border-[#b9c0c7] flex items-center justify-between text-xs">
             <span className="font-bold text-slate-800 uppercase tracking-wide">
-              Задачи соревнования
+              Contest problems
             </span>
             <span className="text-slate-500">
-              Языки: C++, Python 3, JavaScript
+              Languages: C++, Python 3, JavaScript
             </span>
           </div>
 
@@ -254,9 +254,9 @@ export const ContestView: React.FC<ContestViewProps> = ({
               <thead>
                 <tr className="bg-slate-100 text-slate-700 text-xs font-semibold uppercase tracking-wider border-b border-slate-300">
                   <th className="py-2.5 px-3 text-center w-12">#</th>
-                  <th className="py-2.5 px-4">Название</th>
-                  <th className="py-2.5 px-3 text-center w-28">Сложность</th>
-                  <th className="py-2.5 px-4 text-right w-28">Решение</th>
+                  <th className="py-2.5 px-4">Name</th>
+                  <th className="py-2.5 px-3 text-center w-28">Difficulty</th>
+                  <th className="py-2.5 px-4 text-right w-28">Solution</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200">
@@ -271,7 +271,7 @@ export const ContestView: React.FC<ContestViewProps> = ({
                       <td className="py-3 px-3 text-center font-mono font-bold">
                         <div className="flex items-center justify-center gap-1">
                           {isSolved ? (
-                            <span title="Сдано!">
+                            <span title="Solved!">
                               <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                             </span>
                           ) : (
@@ -301,7 +301,7 @@ export const ContestView: React.FC<ContestViewProps> = ({
                           onClick={() => onSelectProblem(prob)}
                           className="px-3 py-1 bg-[#3b5998] hover:bg-[#2b4270] text-white font-semibold rounded text-xs transition cursor-pointer"
                         >
-                          {isSolved ? 'Просмотр' : 'Решать'}
+                          {isSolved ? 'View' : 'Solve'}
                         </button>
                       </td>
                     </tr>
@@ -313,15 +313,15 @@ export const ContestView: React.FC<ContestViewProps> = ({
         </div>
       )}
 
-      {/* SUBTAB 2: Таблица лидеров олимпиады (ICPC / Codeforces Scoreboard) */}
+      {/* SUBTAB 2: Contest standings (ICPC / Codeforces scoreboard) */}
       {isAllowed && activeSubtab === 'standings' && (
         <div className="bg-white border border-[#b9c0c7] rounded overflow-hidden shadow-2xs space-y-4">
           <div className="bg-[#e1e7ee] px-4 py-2.5 border-b border-[#b9c0c7] flex items-center justify-between text-xs">
             <span className="font-bold text-slate-800 uppercase tracking-wide">
-              Турнирная таблица контеста (ACM/ICPC Standings)
+              Contest standings (ACM/ICPC)
             </span>
             <span className="text-slate-500">
-              Штраф: время решения + 20 мин за каждую неверную попытку
+              Penalty: submission time + 20 minutes for each incorrect attempt
             </span>
           </div>
 
@@ -329,10 +329,10 @@ export const ContestView: React.FC<ContestViewProps> = ({
             <table className="w-full text-left text-xs border-collapse">
               <thead>
                 <tr className="bg-slate-100 text-slate-700 font-semibold border-b border-slate-300">
-                  <th className="py-2.5 px-3 text-center w-14">Место</th>
-                  <th className="py-2.5 px-4">Участник</th>
-                  <th className="py-2.5 px-3 text-center w-16">Всего (=)</th>
-                  <th className="py-2.5 px-3 text-center w-20">Штраф</th>
+                  <th className="py-2.5 px-3 text-center w-14">Rank</th>
+                  <th className="py-2.5 px-4">Participant</th>
+                  <th className="py-2.5 px-3 text-center w-16">Solved (=)</th>
+                  <th className="py-2.5 px-3 text-center w-20">Penalty</th>
 
                   {/* Columns for each problem in contest */}
                   {contest.problemIds.map(probId => (
@@ -346,7 +346,7 @@ export const ContestView: React.FC<ContestViewProps> = ({
                 {scoreboardRows.length === 0 ? (
                   <tr>
                     <td colSpan={4 + contest.problemIds.length} className="py-8 text-center text-slate-500">
-                      Участники ещё не отправляли решений в этом контесте.
+                      Participants have not submitted any solutions in this contest yet.
                     </td>
                   </tr>
                 ) : (
@@ -385,7 +385,7 @@ export const ContestView: React.FC<ContestViewProps> = ({
                           </span>
                           {isCurrent && (
                             <span className="ml-1.5 text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-200 text-amber-900">
-                              ВЫ
+                              YOU
                             </span>
                           )}
                         </td>
@@ -449,27 +449,27 @@ export const ContestView: React.FC<ContestViewProps> = ({
           <div className="p-3 bg-slate-50 border-t border-slate-200 text-[11px] text-slate-600 flex flex-wrap items-center gap-4">
             <span className="flex items-center gap-1.5">
               <span className="w-3.5 h-3.5 bg-emerald-100 border border-emerald-300 rounded inline-block text-center text-[10px] font-bold text-emerald-800">+</span>
-              Задача решена (число указывает число неверных попыток до решения)
+              Problem solved (the number shows incorrect attempts before acceptance)
             </span>
             <span className="flex items-center gap-1.5">
               <span className="w-3.5 h-3.5 bg-red-100 border border-red-300 rounded inline-block text-center text-[10px] font-bold text-red-800">-1</span>
-              Были неверные попытки, задача не сдана
+              Incorrect attempts; problem not solved
             </span>
           </div>
         </div>
       )}
 
-      {/* SUBTAB 3: Посылки контеста (с защитой кода от списывания) */}
+      {/* SUBTAB 3: Contest submissions (code is hidden to prevent copying) */}
       {isAllowed && activeSubtab === 'submissions' && (
         <div className="bg-white border border-[#b9c0c7] rounded overflow-hidden shadow-2xs">
           <div className="bg-[#e1e7ee] px-4 py-2.5 border-b border-[#b9c0c7] flex items-center justify-between text-xs">
             <span className="font-bold text-slate-800 uppercase tracking-wide">
-              Посылки контеста ({contestSubmissions.length})
+              Contest submissions ({contestSubmissions.length})
             </span>
             {contest.hideCodeDuringContest && !isTeacherAuthenticated && (
               <span className="text-slate-500 flex items-center gap-1">
                 <Lock className="w-3 h-3" />
-                <span>Чужой код скрыт во время соревнования</span>
+                <span>Other participants’ code is hidden during the contest</span>
               </span>
             )}
           </div>
@@ -479,20 +479,20 @@ export const ContestView: React.FC<ContestViewProps> = ({
               <thead>
                 <tr className="bg-slate-100 text-slate-700 font-semibold border-b border-slate-300">
                   <th className="py-2.5 px-3 text-center w-16">#</th>
-                  <th className="py-2.5 px-3">Время</th>
-                  <th className="py-2.5 px-4">Автор</th>
-                  <th className="py-2.5 px-3">Задача</th>
-                  <th className="py-2.5 px-3 text-center">Язык</th>
-                  <th className="py-2.5 px-4">Вердикт</th>
-                  <th className="py-2.5 px-3 text-right">Время</th>
-                  <th className="py-2.5 px-3 text-center w-14">Код</th>
+                  <th className="py-2.5 px-3">Time</th>
+                  <th className="py-2.5 px-4">Author</th>
+                  <th className="py-2.5 px-3">Problem</th>
+                  <th className="py-2.5 px-3 text-center">Language</th>
+                  <th className="py-2.5 px-4">Verdict</th>
+                  <th className="py-2.5 px-3 text-right">Time</th>
+                  <th className="py-2.5 px-3 text-center w-14">Code</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200">
                 {contestSubmissions.length === 0 ? (
                   <tr>
                     <td colSpan={8} className="py-8 text-center text-slate-500">
-                      Посылок в этом контесте пока нет.
+                      There are no submissions in this contest yet.
                     </td>
                   </tr>
                 ) : (
@@ -512,18 +512,18 @@ export const ContestView: React.FC<ContestViewProps> = ({
                             {sub.verdict}
                           </span>
                         </td>
-                        <td className="py-2.5 px-3 text-right font-mono text-slate-700">{sub.timeMs} мс</td>
+                        <td className="py-2.5 px-3 text-right font-mono text-slate-700">{sub.timeMs} ms</td>
                         <td className="py-2.5 px-3 text-center">
                           {canViewCode ? (
                             <button
                               onClick={() => onOpenSubmissionModal(sub)}
                               className="p-1 rounded text-slate-500 hover:text-blue-700 hover:bg-blue-100 transition cursor-pointer"
-                              title="Посмотреть код"
+                              title="View code"
                             >
                               <Eye className="w-3.5 h-3.5" />
                             </button>
                           ) : (
-                            <span title="Код скрыт во время контеста" className="inline-flex justify-center w-full">
+                            <span title="Code is hidden during the contest" className="inline-flex justify-center w-full">
                               <Lock className="w-3.5 h-3.5 text-slate-300" />
                             </span>
                           )}

@@ -54,7 +54,7 @@ export const Header: React.FC<HeaderProps> = ({
               </span>
             </div>
             <p className="text-xs text-slate-500 font-medium">
-              Олимпиады и соревнования по программированию для школьников
+              Programming contests and olympiads for students
             </p>
           </div>
         </div>
@@ -66,23 +66,23 @@ export const Header: React.FC<HeaderProps> = ({
             <div className="flex items-center gap-2 bg-red-50 border border-red-200 rounded px-2.5 py-1 text-xs">
               <span className="font-bold text-red-700 flex items-center gap-1">
                 <ShieldAlert className="w-3.5 h-3.5" />
-                <span>Учитель активен</span>
+                <span>Teacher active</span>
               </span>
               <button
                 onClick={onExitTeacherMode}
                 className="text-[11px] text-red-600 hover:underline cursor-pointer"
               >
-                Выйти
+                Sign out
               </button>
             </div>
           ) : (
             <button
               onClick={onOpenTeacherAuth}
               className="flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-red-700 bg-red-50 hover:bg-red-100 border border-red-200 rounded transition cursor-pointer"
-              title="Вход по мастер-паролю учителя"
+              title="Sign in with the teacher master password"
             >
               <KeyRound className="w-3.5 h-3.5" />
-              <span>Учительская</span>
+              <span>Teacher panel</span>
             </button>
           )}
 
@@ -92,7 +92,7 @@ export const Header: React.FC<HeaderProps> = ({
           {currentUser ? (
             <div className="flex items-center gap-3 bg-slate-50 border border-slate-200 rounded px-3 py-1.5 shadow-2xs">
               <div className="flex items-center gap-2">
-                <span className="text-xs text-slate-500">Ученик:</span>
+                <span className="text-xs text-slate-500">Student:</span>
                 <button
                   onClick={() => setActiveTab('profile')}
                   className="hover:underline font-bold transition-colors cursor-pointer"
@@ -111,10 +111,10 @@ export const Header: React.FC<HeaderProps> = ({
               <button
                 onClick={onLogout}
                 className="flex items-center gap-1 text-xs text-slate-600 hover:text-red-600 transition-colors cursor-pointer"
-                title="Выйти из аккаунта"
+                title="Sign out"
               >
                 <LogOut className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Выйти</span>
+                <span className="hidden sm:inline">Sign out</span>
               </button>
             </div>
           ) : (
@@ -123,7 +123,7 @@ export const Header: React.FC<HeaderProps> = ({
               className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 border border-blue-700 rounded transition shadow-2xs cursor-pointer"
             >
               <LogIn className="w-3.5 h-3.5" />
-              <span>Вход для ученика</span>
+              <span>Student sign-in</span>
             </button>
           )}
         </div>
@@ -132,7 +132,7 @@ export const Header: React.FC<HeaderProps> = ({
       {/* Codeforces classic navigation bar */}
       <nav className="bg-[#3b5998] border-t border-[#2e477a] text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center overflow-x-auto scrollbar-none">
-          {/* TAB 1: ОЛИМПИАДЫ (ПРЯМО ПЕРЕД ЗАДАЧАМИ!) */}
+          {/* TAB 1: CONTESTS (BEFORE PROBLEMS) */}
           <button
             onClick={() => setActiveTab('contests')}
             className={`flex items-center gap-1.5 px-4 py-2.5 text-sm font-semibold tracking-wide transition border-b-2 cursor-pointer whitespace-nowrap ${
@@ -142,10 +142,10 @@ export const Header: React.FC<HeaderProps> = ({
             }`}
           >
             <Trophy className="w-4 h-4 text-amber-300" />
-            <span>ОЛИМПИАДЫ</span>
+            <span>CONTESTS</span>
           </button>
 
-          {/* TAB 2: ЗАДАЧИ */}
+          {/* TAB 2: PROBLEMS */}
           <button
             onClick={() => setActiveTab('problems')}
             className={`flex items-center gap-1.5 px-4 py-2.5 text-sm font-semibold tracking-wide transition border-b-2 cursor-pointer whitespace-nowrap ${
@@ -155,7 +155,7 @@ export const Header: React.FC<HeaderProps> = ({
             }`}
           >
             <Code2 className="w-4 h-4" />
-            <span>ЗАДАЧИ</span>
+            <span>PROBLEMS</span>
           </button>
 
           <button
@@ -167,7 +167,7 @@ export const Header: React.FC<HeaderProps> = ({
             }`}
           >
             <FileCode2 className="w-4 h-4" />
-            <span>ПОСЫЛКИ</span>
+            <span>SUBMISSIONS</span>
           </button>
 
           <button
@@ -179,7 +179,7 @@ export const Header: React.FC<HeaderProps> = ({
             }`}
           >
             <Trophy className="w-4 h-4" />
-            <span>ТАБЛИЦА ЛИДЕРОВ</span>
+            <span>STANDINGS</span>
           </button>
 
           <button
@@ -191,7 +191,7 @@ export const Header: React.FC<HeaderProps> = ({
             }`}
           >
             <UserIcon className="w-4 h-4" />
-            <span>МОЙ ПРОФИЛЬ</span>
+            <span>MY PROFILE</span>
           </button>
 
           <button
@@ -203,7 +203,7 @@ export const Header: React.FC<HeaderProps> = ({
             }`}
           >
             <HelpCircle className="w-4 h-4" />
-            <span>О ПЛАТФОРМЕ</span>
+            <span>ABOUT</span>
           </button>
 
           {isTeacherAuthenticated && (
@@ -216,7 +216,7 @@ export const Header: React.FC<HeaderProps> = ({
               }`}
             >
               <ShieldAlert className="w-4 h-4 text-amber-300" />
-              <span>ПАНЕЛЬ УЧИТЕЛЯ</span>
+              <span>TEACHER PANEL</span>
             </button>
           )}
         </div>

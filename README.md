@@ -1,27 +1,27 @@
 # SchoolForces
 
-SchoolForces — платформа для школьных соревнований по программированию с задачами, контестами, рейтингом и таблицей лидеров.
+SchoolForces is a programming contest platform for school students, featuring coding problems, contests, ratings, and leaderboards.
 
-## Запуск локально
+## Getting Started
 
-Требуется Node.js.
+Requires Node.js.
 
 ```bash
 npm install
 npm run dev
 ```
 
-Для production-сборки:
+To create and preview a production build:
 
 ```bash
 npm run build
 npm run preview
 ```
 
-## Лицензия
+## License
 
-Проект распространяется по лицензии [Apache License 2.0](./LICENSE).
+This project is licensed under the [Apache License 2.0](./LICENSE).
 
-## Автор
+## Author
 
 [Aziz Sadonov](https://github.com/azizs-dnv)

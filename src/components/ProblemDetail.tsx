@@ -61,7 +61,7 @@ export const ProblemDetail: React.FC<ProblemDetailProps> = ({
   };
 
   const handleResetCode = () => {
-    if (confirm('Сбросить код к исходному шаблону?')) {
+    if (confirm('Reset the code to the original template?')) {
       setCode(problem.starterCode[language] || '');
     }
   };
@@ -96,7 +96,7 @@ export const ProblemDetail: React.FC<ProblemDetailProps> = ({
     }
 
     if (!code.trim()) {
-      alert('Пожалуйста, напишите код решения перед отправкой!');
+      alert('Please write your solution before submitting!');
       return;
     }
 
@@ -138,7 +138,7 @@ export const ProblemDetail: React.FC<ProblemDetailProps> = ({
       problemTitle: problem.title,
       language,
       code,
-      submittedAt: 'Только что',
+      submittedAt: 'Just now',
       verdict: result.verdict,
       testFailed: result.testFailed,
       totalTests: result.totalTests,
@@ -177,18 +177,18 @@ export const ProblemDetail: React.FC<ProblemDetailProps> = ({
           className="inline-flex items-center gap-2 text-sm font-semibold text-slate-700 hover:text-blue-700 cursor-pointer transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span>Вернуться к списку задач</span>
+          <span>Back to problem list</span>
         </button>
 
         <div className="flex items-center gap-2">
           {isSolved && (
             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-bold rounded bg-emerald-50 text-emerald-700 border border-emerald-300">
               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-              <span>Решено вами (+50 к рейтингу)</span>
+              <span>Solved by you (+50 rating points)</span>
             </span>
           )}
           <span className="px-2.5 py-1 text-xs font-mono font-bold rounded bg-slate-100 text-slate-800 border border-slate-300">
-            Сложность: *{problem.difficulty}
+            Difficulty: *{problem.difficulty}
           </span>
         </div>
       </div>
@@ -205,20 +205,20 @@ export const ProblemDetail: React.FC<ProblemDetailProps> = ({
 
               <div className="mt-3 text-xs text-slate-600 space-y-1 font-serif">
                 <div>
-                  <span className="text-slate-500">ограничение по времени на тест:</span>{' '}
+                  <span className="text-slate-500">time limit per test:</span>{' '}
                   <span className="font-semibold text-slate-800">{problem.timeLimit}</span>
                 </div>
                 <div>
-                  <span className="text-slate-500">ограничение по памяти на тест:</span>{' '}
+                  <span className="text-slate-500">memory limit per test:</span>{' '}
                   <span className="font-semibold text-slate-800">{problem.memoryLimit}</span>
                 </div>
                 <div>
-                  <span className="text-slate-500">ввод:</span>{' '}
-                  <span className="font-semibold text-slate-800">стандартный ввод (stdin)</span>
+                  <span className="text-slate-500">input:</span>{' '}
+                  <span className="font-semibold text-slate-800">standard input (stdin)</span>
                 </div>
                 <div>
-                  <span className="text-slate-500">вывод:</span>{' '}
-                  <span className="font-semibold text-slate-800">стандартный вывод (stdout)</span>
+                  <span className="text-slate-500">output:</span>{' '}
+                  <span className="font-semibold text-slate-800">standard output (stdout)</span>
                 </div>
               </div>
             </div>
@@ -233,7 +233,7 @@ export const ProblemDetail: React.FC<ProblemDetailProps> = ({
             {/* Input Format */}
             <div className="mt-6">
               <h3 className="text-sm font-bold text-slate-900 tracking-wide uppercase border-b border-slate-200 pb-1 mb-2">
-                Входные данные
+                Input
               </h3>
               <div className="space-y-2 text-sm text-slate-800 leading-relaxed">
                 {problem.inputFormat.map((par, i) => (
@@ -245,7 +245,7 @@ export const ProblemDetail: React.FC<ProblemDetailProps> = ({
             {/* Output Format */}
             <div className="mt-6">
               <h3 className="text-sm font-bold text-slate-900 tracking-wide uppercase border-b border-slate-200 pb-1 mb-2">
-                Выходные данные
+                Output
               </h3>
               <div className="space-y-2 text-sm text-slate-800 leading-relaxed">
                 {problem.outputFormat.map((par, i) => (
@@ -257,28 +257,28 @@ export const ProblemDetail: React.FC<ProblemDetailProps> = ({
             {/* Sample Tests in Codeforces dual box style */}
             <div className="mt-6">
               <h3 className="text-sm font-bold text-slate-900 tracking-wide uppercase border-b border-slate-200 pb-1 mb-3">
-                Примеры
+                Examples
               </h3>
 
               <div className="space-y-4">
                 {problem.sampleTests.map((sample, idx) => (
                   <div key={idx} className="border border-[#b9c0c7] rounded overflow-hidden text-xs">
                     <div className="bg-[#e1e7ee] px-3 py-1.5 border-b border-[#b9c0c7] flex items-center justify-between font-mono font-semibold text-slate-700">
-                      <span>Пример #{idx + 1}</span>
+                      <span>Example #{idx + 1}</span>
                       <button
                         onClick={() => copyToClipboard(sample.input, idx)}
                         className="flex items-center gap-1 text-[11px] text-blue-700 hover:text-blue-900 cursor-pointer font-sans"
-                        title="Скопировать ввод"
+                        title="Copy input"
                       >
                         {copiedIndex === idx ? (
                           <>
                             <Check className="w-3 h-3 text-emerald-600" />
-                            <span className="text-emerald-700 font-bold">Скопировано!</span>
+                            <span className="text-emerald-700 font-bold">Copied!</span>
                           </>
                         ) : (
                           <>
                             <Copy className="w-3 h-3" />
-                            <span>Скопировать ввод</span>
+                            <span>Copy input</span>
                           </>
                         )}
                       </button>
@@ -287,7 +287,7 @@ export const ProblemDetail: React.FC<ProblemDetailProps> = ({
                     <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-[#b9c0c7]">
                       <div className="p-2.5 bg-[#fcfcfc]">
                         <div className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-1">
-                          Входные данные
+                          Input
                         </div>
                         <pre className="font-mono text-slate-900 whitespace-pre overflow-x-auto p-1.5 bg-white border border-slate-200 rounded">
                           {sample.input}
@@ -296,7 +296,7 @@ export const ProblemDetail: React.FC<ProblemDetailProps> = ({
 
                       <div className="p-2.5 bg-[#fcfcfc]">
                         <div className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-1">
-                          Выходные данные
+                          Output
                         </div>
                         <pre className="font-mono text-slate-900 whitespace-pre overflow-x-auto p-1.5 bg-white border border-slate-200 rounded">
                           {sample.output}
@@ -312,7 +312,7 @@ export const ProblemDetail: React.FC<ProblemDetailProps> = ({
             {problem.note && problem.note.length > 0 && (
               <div className="mt-6 p-3 bg-blue-50/60 border border-blue-200 rounded text-xs text-slate-700 leading-relaxed">
                 <div className="font-bold text-blue-900 uppercase tracking-wide mb-1">
-                  Примечание
+                  Note
                 </div>
                 {problem.note.map((n, i) => (
                   <p key={i}>{n}</p>
@@ -326,11 +326,11 @@ export const ProblemDetail: React.FC<ProblemDetailProps> = ({
             <div className="flex items-center justify-between mb-2">
               <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wide flex items-center gap-1.5">
                 <Play className="w-3.5 h-3.5 text-blue-600" />
-                <span>Быстрый запуск на своих данных</span>
+                <span>Quick run with your own input</span>
               </h3>
               {customTime !== null && (
                 <span className="text-[11px] text-slate-500 font-mono">
-                  Время: {customTime} мс
+                  Time: {customTime} ms
                 </span>
               )}
             </div>
@@ -338,14 +338,14 @@ export const ProblemDetail: React.FC<ProblemDetailProps> = ({
             <div className="space-y-3">
               <div>
                 <label className="block text-[11px] text-slate-500 font-medium mb-1">
-                  Тестовый ввод (stdin):
+                  Test input (stdin):
                 </label>
                 <textarea
                   value={customInput}
                   onChange={e => setCustomInput(e.target.value)}
                   rows={2}
                   className="w-full font-mono text-xs p-2 border border-slate-300 rounded focus:outline-hidden focus:ring-1 focus:ring-blue-600"
-                  placeholder="Введите числа или строки..."
+                  placeholder="Enter numbers or strings..."
                 />
               </div>
 
@@ -356,7 +356,7 @@ export const ProblemDetail: React.FC<ProblemDetailProps> = ({
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 transition cursor-pointer"
                 >
                   <Play className="w-3.5 h-3.5 text-emerald-600" />
-                  <span>{isLocalRunning ? 'Выполняется...' : 'Проверить вывод'}</span>
+                  <span>{isLocalRunning ? 'Running...' : 'Check output'}</span>
                 </button>
               </div>
 
@@ -369,7 +369,7 @@ export const ProblemDetail: React.FC<ProblemDetailProps> = ({
               {customOutput && (
                 <div className="p-2.5 bg-slate-50 border border-slate-200 rounded">
                   <div className="text-[10px] uppercase font-bold text-slate-500 mb-1">
-                    Результат программы (stdout):
+                    Program output (stdout):
                   </div>
                   <pre className="font-mono text-xs text-slate-900 whitespace-pre">
                     {customOutput}
@@ -385,15 +385,15 @@ export const ProblemDetail: React.FC<ProblemDetailProps> = ({
           <div className="bg-white border border-[#b9c0c7] rounded overflow-hidden shadow-2xs sticky top-4">
             <div className="bg-[#e1e7ee] px-4 py-2.5 border-b border-[#b9c0c7] flex items-center justify-between">
               <h2 className="text-xs font-bold text-slate-800 uppercase tracking-wide">
-                ОТПРАВИТЬ РЕШЕНИЕ
+                SUBMIT SOLUTION
               </h2>
               <button
                 onClick={handleResetCode}
                 className="flex items-center gap-1 text-[11px] text-slate-600 hover:text-slate-900 transition cursor-pointer"
-                title="Сбросить шаблон кода"
+                title="Reset code template"
               >
                 <RotateCcw className="w-3 h-3" />
-                <span>Шаблон</span>
+                <span>Template</span>
               </button>
             </div>
 
@@ -403,7 +403,7 @@ export const ProblemDetail: React.FC<ProblemDetailProps> = ({
                   <div className="flex items-start gap-2">
                     <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
                     <span>
-                      Вы не авторизованы. Для отправки решений войдите под аккаунтом, выданным учителем.
+                      You are not signed in. To submit solutions, sign in with an account provided by your teacher.
                     </span>
                   </div>
                   <button
@@ -411,7 +411,7 @@ export const ProblemDetail: React.FC<ProblemDetailProps> = ({
                     className="self-start inline-flex items-center gap-1.5 px-2.5 py-1 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded text-xs transition cursor-pointer shadow-2xs"
                   >
                     <LogIn className="w-3.5 h-3.5" />
-                    <span>Войти в аккаунт</span>
+                    <span>Sign in</span>
                   </button>
                 </div>
               )}
@@ -419,7 +419,7 @@ export const ProblemDetail: React.FC<ProblemDetailProps> = ({
               {/* Language Selector: C++, Python, JavaScript */}
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">
-                  Язык программирования:
+                  Programming language:
                 </label>
                 <select
                   value={language}
@@ -432,10 +432,10 @@ export const ProblemDetail: React.FC<ProblemDetailProps> = ({
                 </select>
                 <p className="text-[11px] text-slate-500 mt-1">
                   {language === 'cpp'
-                    ? 'Чтение: cin >> a >> b; или getline(cin, s); Вывод: cout << res << endl;'
+                    ? 'Input: cin >> a >> b; or getline(cin, s); Output: cout << res << endl;'
                     : language === 'python'
-                    ? 'Чтение: a, b = map(int, input().split()). Вывод: print(a + b).'
-                    : 'Чтение: fs.readFileSync(0, "utf-8"). Вывод: console.log().'}
+                    ? 'Input: a, b = map(int, input().split()). Output: print(a + b).'
+                    : 'Input: fs.readFileSync(0, "utf-8"). Output: console.log().'}
                 </p>
               </div>
 
@@ -443,10 +443,10 @@ export const ProblemDetail: React.FC<ProblemDetailProps> = ({
               <div>
                 <div className="flex justify-between items-center mb-1">
                   <label className="text-xs font-semibold text-slate-700">
-                    Исходный код:
+                    Source code:
                   </label>
                   <span className="text-[10px] text-slate-400 font-mono">
-                    Клавиша Tab поддерживается
+                    The Tab key is supported
                   </span>
                 </div>
                 <div className="relative">
@@ -457,7 +457,7 @@ export const ProblemDetail: React.FC<ProblemDetailProps> = ({
                     rows={15}
                     spellCheck={false}
                     className="w-full font-mono text-xs leading-relaxed p-3 bg-slate-900 text-emerald-400 rounded border border-slate-700 focus:outline-hidden focus:ring-2 focus:ring-blue-500 selection:bg-blue-600"
-                    placeholder="Напишите решение задачи здесь..."
+                    placeholder="Write your solution here..."
                   />
                 </div>
               </div>
@@ -468,8 +468,8 @@ export const ProblemDetail: React.FC<ProblemDetailProps> = ({
                   <div className="inline-flex items-center gap-2 text-xs font-bold text-blue-800 font-mono">
                     <span className="w-2 h-2 rounded-full bg-blue-600 animate-ping"></span>
                     {testingProgress
-                      ? `Тестируется на тесте ${testingProgress.current} из ${testingProgress.total}...`
-                      : 'Отправка в тестирующую систему...'}
+                      ? `Testing test ${testingProgress.current} of ${testingProgress.total}...`
+                      : 'Submitting to the judging system...'}
                   </div>
                   <div className="w-full bg-blue-200 h-1.5 rounded-full overflow-hidden">
                     <div
@@ -504,7 +504,7 @@ export const ProblemDetail: React.FC<ProblemDetailProps> = ({
                         <>
                           <XCircle className="w-4 h-4 text-red-600" />
                           <span className="text-red-700">
-                            {latestVerdict.verdict} на тесте {latestVerdict.testFailed}
+                            {latestVerdict.verdict} on test {latestVerdict.testFailed}
                           </span>
                         </>
                       )}
@@ -513,15 +513,15 @@ export const ProblemDetail: React.FC<ProblemDetailProps> = ({
                     <div className="flex items-center gap-2 text-[11px] text-slate-500 font-mono">
                       <span className="flex items-center gap-0.5">
                         <Clock className="w-3 h-3" />
-                        {latestVerdict.timeMs} мс
+                        {latestVerdict.timeMs} ms
                       </span>
                     </div>
                   </div>
 
                   <p className="text-xs">
                     {latestVerdict.verdict === 'Accepted'
-                      ? `Пройдено тестов: ${latestVerdict.passedTests}/${latestVerdict.totalTests}. Отличное решение!`
-                      : `Пройдено тестов: ${latestVerdict.passedTests} из ${latestVerdict.totalTests}. ${
+                      ? `Tests passed: ${latestVerdict.passedTests}/${latestVerdict.totalTests}. Great solution!`
+                      : `Tests passed: ${latestVerdict.passedTests} of ${latestVerdict.totalTests}. ${
                           latestVerdict.errorMessage || ''
                         }`}
                   </p>
@@ -529,20 +529,20 @@ export const ProblemDetail: React.FC<ProblemDetailProps> = ({
                   {latestVerdict.sampleFailedDetails && (
                     <div className="mt-2.5 pt-2 border-t border-red-200 text-[11px] space-y-1 font-mono">
                       <div className="font-sans font-bold text-red-800">
-                        Детали ошибки на примере:
+                        Error details for the sample:
                       </div>
                       <div>
-                        <span className="text-slate-500">Ввод:</span>{' '}
+                        <span className="text-slate-500">Input:</span>{' '}
                         {latestVerdict.sampleFailedDetails.input}
                       </div>
                       <div>
-                        <span className="text-slate-500">Ожидалось:</span>{' '}
+                        <span className="text-slate-500">Expected:</span>{' '}
                         <span className="text-emerald-700">
                           {latestVerdict.sampleFailedDetails.expected}
                         </span>
                       </div>
                       <div>
-                        <span className="text-slate-500">Вывод программы:</span>{' '}
+                        <span className="text-slate-500">Program output:</span>{' '}
                         <span className="text-red-700">
                           {latestVerdict.sampleFailedDetails.actual}
                         </span>
@@ -563,7 +563,7 @@ export const ProblemDetail: React.FC<ProblemDetailProps> = ({
                 }`}
               >
                 <Send className="w-4 h-4" />
-                <span>{isSubmitting ? 'Проверка...' : 'Отправить решение'}</span>
+                <span>{isSubmitting ? 'Checking...' : 'Submit solution'}</span>
               </button>
             </div>
           </div>

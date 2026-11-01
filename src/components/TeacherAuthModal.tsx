@@ -41,7 +41,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({
       onSuccess();
       onClose();
     } else {
-      setError('Неверный мастер-пароль учителя! Доступ запрещён.');
+      setError('Incorrect teacher master password. Access denied.');
     }
   };
 
@@ -54,7 +54,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({
           <div className="flex items-center gap-2">
             <ShieldAlert className="w-5 h-5 text-amber-300" />
             <span className="font-bold text-xs uppercase tracking-wider">
-              Вход в учительскую панель
+              Teacher panel sign-in
             </span>
           </div>
           <button onClick={onClose} className="text-white hover:text-slate-200 cursor-pointer">
@@ -66,7 +66,7 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({
           <div className="p-2.5 bg-amber-50 border border-amber-300 rounded text-amber-900 text-[11px] leading-relaxed flex items-start gap-2">
             <Lock className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
             <div>
-              Панель защищена от несанкционированного доступа. Для входа требуется мастер-пароль учителя.
+              This panel is protected from unauthorized access. The teacher master password is required to sign in.
             </div>
           </div>
 
@@ -78,14 +78,14 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({
 
           <div>
             <label className="block font-semibold text-slate-800 mb-1">
-              Мастер-пароль учителя:
+              Teacher master password:
             </label>
             <div className="relative">
               <input
                 type="password"
                 required
                 autoFocus
-                placeholder="Введите пароль учителя"
+                placeholder="Enter the teacher password"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 className="w-full text-xs p-2 pl-8 border border-slate-300 rounded focus:outline-hidden focus:ring-2 focus:ring-red-600 font-mono"
@@ -94,9 +94,9 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({
             </div>
             <div className="text-[10px] text-slate-500 mt-1">
               {isCustomPassword ? (
-                <span className="text-emerald-700 font-semibold">Установлен пользовательский пароль учителя.</span>
+                <span className="text-emerald-700 font-semibold">A custom teacher password is set.</span>
               ) : (
-                <span>Пароль по умолчанию: <code className="bg-slate-100 px-1 py-0.5 rounded text-slate-700 font-mono">teacher2026</code></span>
+                <span>Default password: <code className="bg-slate-100 px-1 py-0.5 rounded text-slate-700 font-mono">teacher2026</code></span>
               )}
             </div>
           </div>
@@ -107,13 +107,13 @@ export const TeacherAuthModal: React.FC<TeacherAuthModalProps> = ({
               onClick={onClose}
               className="flex-1 py-2 px-3 border border-slate-300 rounded text-slate-700 font-semibold hover:bg-slate-100 transition cursor-pointer"
             >
-              Отмена
+              Cancel
             </button>
             <button
               type="submit"
               className="flex-1 py-2 px-3 bg-red-700 hover:bg-red-800 text-white font-bold rounded transition shadow-sm cursor-pointer"
             >
-              Авторизоваться
+              Sign in
             </button>
           </div>
         </form>

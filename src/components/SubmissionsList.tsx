@@ -43,25 +43,25 @@ export const SubmissionsList: React.FC<SubmissionsListProps> = ({
         <div className="flex items-center gap-2">
           <FileCode2 className="w-5 h-5 text-blue-600" />
           <h1 className="text-lg font-bold text-slate-800 tracking-tight uppercase">
-            ОЧЕРЕДЬ ПОСЫЛОК (СТАТУС)
+            SUBMISSION QUEUE (STATUS)
           </h1>
         </div>
 
         <div className="flex items-center gap-2 text-xs">
-          <span className="text-slate-500 font-medium">Вердикт:</span>
+          <span className="text-slate-500 font-medium">Verdict:</span>
           <select
             value={filterVerdict}
             onChange={e => setFilterVerdict(e.target.value)}
             className="border border-slate-300 rounded px-2.5 py-1.5 bg-white text-slate-700 focus:outline-hidden focus:ring-1 focus:ring-blue-600 cursor-pointer"
           >
-            <option value="all">Все вердикты</option>
-            <option value="Accepted">Только Accepted</option>
-            <option value="Failed">С ошибками</option>
+            <option value="all">All verdicts</option>
+            <option value="Accepted">Accepted only</option>
+            <option value="Failed">With errors</option>
           </select>
 
           <input
             type="text"
-            placeholder="Фильтр по автору..."
+            placeholder="Filter by author..."
             value={filterAuthor}
             onChange={e => setFilterAuthor(e.target.value)}
             className="border border-slate-300 rounded px-2.5 py-1.5 bg-white text-slate-700 w-36 focus:outline-hidden focus:ring-1 focus:ring-blue-600"
@@ -73,10 +73,10 @@ export const SubmissionsList: React.FC<SubmissionsListProps> = ({
       <div className="bg-white border border-[#b9c0c7] rounded overflow-hidden shadow-2xs">
         <div className="bg-[#e1e7ee] px-4 py-2.5 border-b border-[#b9c0c7] flex items-center justify-between">
           <span className="text-xs font-bold text-slate-800 uppercase tracking-wide">
-            Последние отправленные решения ({filtered.length})
+            Latest submissions ({filtered.length})
           </span>
           <span className="text-xs text-slate-500 font-medium">
-            Нажмите на вердикт для просмотра кода
+            Click a verdict to view the code
           </span>
         </div>
 
@@ -85,21 +85,21 @@ export const SubmissionsList: React.FC<SubmissionsListProps> = ({
             <thead>
               <tr className="bg-slate-100 text-slate-700 text-xs font-semibold uppercase tracking-wider border-b border-slate-300">
                 <th className="py-2.5 px-3 text-center w-20">#</th>
-                <th className="py-2.5 px-3 w-32">Время</th>
-                <th className="py-2.5 px-4">Автор</th>
-                <th className="py-2.5 px-4">Задача</th>
-                <th className="py-2.5 px-3 text-center">Язык</th>
-                <th className="py-2.5 px-4">Вердикт</th>
-                <th className="py-2.5 px-3 text-right">Время (мс)</th>
-                <th className="py-2.5 px-3 text-right">Память</th>
-                <th className="py-2.5 px-3 text-center w-16">Код</th>
+                <th className="py-2.5 px-3 w-32">Time</th>
+                <th className="py-2.5 px-4">Author</th>
+                <th className="py-2.5 px-4">Problem</th>
+                <th className="py-2.5 px-3 text-center">Language</th>
+                <th className="py-2.5 px-4">Verdict</th>
+                <th className="py-2.5 px-3 text-right">Time (ms)</th>
+                <th className="py-2.5 px-3 text-right">Memory</th>
+                <th className="py-2.5 px-3 text-center w-16">Code</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200">
               {filtered.length === 0 ? (
                 <tr>
                   <td colSpan={9} className="py-8 text-center text-slate-500 text-sm">
-                    Посылки не найдены.
+                    No submissions found.
                   </td>
                 </tr>
               ) : (
@@ -165,7 +165,7 @@ export const SubmissionsList: React.FC<SubmissionsListProps> = ({
                               <XCircle className="w-3.5 h-3.5 text-red-600" />
                               <span>
                                 {sub.verdict}
-                                {sub.testFailed ? ` на тесте ${sub.testFailed}` : ''}
+                                {sub.testFailed ? ` on test ${sub.testFailed}` : ''}
                               </span>
                             </span>
                           )}
@@ -174,12 +174,12 @@ export const SubmissionsList: React.FC<SubmissionsListProps> = ({
 
                       {/* Time */}
                       <td className="py-3 px-3 text-right font-mono text-xs text-slate-700">
-                        {sub.timeMs} мс
+                        {sub.timeMs} ms
                       </td>
 
                       {/* Memory */}
                       <td className="py-3 px-3 text-right font-mono text-xs text-slate-600">
-                        {sub.memoryKb} КБ
+                        {sub.memoryKb} KB
                       </td>
 
                       {/* Inspect Code button */}
@@ -187,7 +187,7 @@ export const SubmissionsList: React.FC<SubmissionsListProps> = ({
                         <button
                           onClick={() => onOpenSubmissionModal(sub)}
                           className="p-1 rounded text-slate-500 hover:text-blue-700 hover:bg-blue-100 transition cursor-pointer"
-                          title="Посмотреть исходный код"
+                          title="View source code"
                         >
                           <Eye className="w-3.5 h-3.5" />
                         </button>

@@ -59,7 +59,7 @@ export const ProblemList: React.FC<ProblemListProps> = ({
               <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
-                placeholder="Поиск по названию или тегам (например: строки, 800)..."
+                placeholder="Search by title or tags (e.g., strings, 800)..."
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 className="w-full pl-9 pr-3 py-1.5 text-sm border border-slate-300 rounded focus:outline-hidden focus:ring-1 focus:ring-blue-600 focus:border-blue-600"
@@ -68,14 +68,14 @@ export const ProblemList: React.FC<ProblemListProps> = ({
 
             {/* Filter difficulty */}
             <div className="flex items-center gap-2">
-              <span className="text-xs text-slate-500 font-medium">Сложность:</span>
+              <span className="text-xs text-slate-500 font-medium">Difficulty:</span>
               <select
                 value={selectedDifficulty}
                 onChange={e => setSelectedDifficulty(e.target.value)}
                 className="text-xs border border-slate-300 rounded px-2.5 py-1.5 bg-white text-slate-700 focus:outline-hidden focus:ring-1 focus:ring-blue-600 cursor-pointer"
               >
-                <option value="all">Все (800–1200)</option>
-                <option value="800">800 (Базовый)</option>
+                <option value="all">All (800–1200)</option>
+                <option value="800">800 (Beginner)</option>
                 <option value="900">900</option>
                 <option value="1000">1000</option>
                 <option value="1100">1100</option>
@@ -86,15 +86,15 @@ export const ProblemList: React.FC<ProblemListProps> = ({
             {/* Status filter if logged in */}
             {currentUser && (
               <div className="flex items-center gap-2">
-                <span className="text-xs text-slate-500 font-medium">Статус:</span>
+                <span className="text-xs text-slate-500 font-medium">Status:</span>
                 <select
                   value={statusFilter}
                   onChange={e => setStatusFilter(e.target.value as any)}
                   className="text-xs border border-slate-300 rounded px-2.5 py-1.5 bg-white text-slate-700 focus:outline-hidden focus:ring-1 focus:ring-blue-600 cursor-pointer"
                 >
-                  <option value="all">Все задачи</option>
-                  <option value="unsolved">Не решённые</option>
-                  <option value="solved">Только решённые</option>
+                  <option value="all">All problems</option>
+                  <option value="unsolved">Unsolved</option>
+                  <option value="solved">Solved only</option>
                 </select>
               </div>
             )}
@@ -105,10 +105,10 @@ export const ProblemList: React.FC<ProblemListProps> = ({
         <div className="bg-white border border-[#b9c0c7] rounded overflow-hidden shadow-2xs">
           <div className="bg-[#e1e7ee] px-4 py-2.5 border-b border-[#b9c0c7] flex items-center justify-between">
             <h2 className="text-sm font-bold text-slate-800 tracking-wide">
-              АРХИВ ЗАДАЧ ШКОЛЬНОГО РАУНДА
+              SCHOOL ROUND PROBLEM ARCHIVE
             </h2>
             <span className="text-xs text-slate-600 font-medium">
-              Показано: {filteredProblems.length} из {problems.length}
+              Showing: {filteredProblems.length} of {problems.length}
             </span>
           </div>
 
@@ -117,17 +117,17 @@ export const ProblemList: React.FC<ProblemListProps> = ({
               <thead>
                 <tr className="bg-slate-100 text-slate-700 text-xs font-semibold uppercase tracking-wider border-b border-slate-300">
                   <th className="py-2.5 px-3 text-center w-12">#</th>
-                  <th className="py-2.5 px-4">Название</th>
-                  <th className="py-2.5 px-3 text-center w-28">Сложность</th>
-                  <th className="py-2.5 px-3 text-center w-24">Решили</th>
-                  <th className="py-2.5 px-4 text-right w-28">Действие</th>
+                  <th className="py-2.5 px-4">Name</th>
+                  <th className="py-2.5 px-3 text-center w-28">Difficulty</th>
+                  <th className="py-2.5 px-3 text-center w-24">Solved by</th>
+                  <th className="py-2.5 px-4 text-right w-28">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200">
                 {filteredProblems.length === 0 ? (
                   <tr>
                     <td colSpan={5} className="py-8 text-center text-slate-500 text-sm">
-                      Задачи по заданным фильтрам не найдены.
+                      No problems match the selected filters.
                     </td>
                   </tr>
                 ) : (
@@ -146,7 +146,7 @@ export const ProblemList: React.FC<ProblemListProps> = ({
                         <td className="py-3 px-3 text-center font-mono font-bold text-slate-700">
                           <div className="flex items-center justify-center gap-1.5">
                             {isSolved ? (
-                              <span title="Решено вами!">
+                              <span title="Solved by you!">
                                 <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
                               </span>
                             ) : (
@@ -196,7 +196,7 @@ export const ProblemList: React.FC<ProblemListProps> = ({
 
                         {/* Solvers count */}
                         <td className="py-3 px-3 text-center font-mono text-xs text-slate-600">
-                          {solvers} чел.
+                          {solvers} users
                         </td>
 
                         {/* Action */}
@@ -205,7 +205,7 @@ export const ProblemList: React.FC<ProblemListProps> = ({
                             onClick={() => onSelectProblem(problem)}
                             className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded bg-[#3b5998] hover:bg-[#2b4270] text-white transition shadow-2xs cursor-pointer"
                           >
-                            <span>{isSolved ? 'Просмотр' : 'Решать'}</span>
+                            <span>{isSolved ? 'View' : 'Solve'}</span>
                             <ArrowRight className="w-3 h-3" />
                           </button>
                         </td>
@@ -226,24 +226,24 @@ export const ProblemList: React.FC<ProblemListProps> = ({
           <div className="bg-[#e1e7ee] px-3.5 py-2 border-b border-[#b9c0c7] flex items-center gap-2">
             <BookOpen className="w-4 h-4 text-[#3b5998]" />
             <span className="text-xs font-bold text-slate-800 uppercase">
-              Школьный контест #1
+              School Contest #1
             </span>
           </div>
           <div className="p-3.5 text-xs text-slate-600 space-y-2.5">
             <p>
-              Добро пожаловать на школьную тренировочную платформу <b>SchoolForces</b>!
+              Welcome to the school training platform <b>SchoolForces</b>!
             </p>
             <div className="border-t border-slate-200 pt-2 space-y-1">
               <div className="flex justify-between py-0.5">
-                <span className="text-slate-500">Длительность:</span>
-                <span className="font-semibold text-slate-700">Всегда открыт</span>
+                <span className="text-slate-500">Duration:</span>
+                <span className="font-semibold text-slate-700">Always open</span>
               </div>
               <div className="flex justify-between py-0.5">
-                <span className="text-slate-500">Языки:</span>
+                <span className="text-slate-500">Languages:</span>
                 <span className="font-semibold text-slate-700">JS, Python 3</span>
               </div>
               <div className="flex justify-between py-0.5">
-                <span className="text-slate-500">Система проверки:</span>
+                <span className="text-slate-500">Judge:</span>
                 <span className="font-semibold text-emerald-700">In-Browser Judge</span>
               </div>
             </div>
@@ -255,18 +255,18 @@ export const ProblemList: React.FC<ProblemListProps> = ({
           <div className="bg-[#e1e7ee] px-3.5 py-2 border-b border-[#b9c0c7] flex items-center gap-2">
             <Award className="w-4 h-4 text-amber-600" />
             <span className="text-xs font-bold text-slate-800 uppercase">
-              Система рейтинга
+              Rating system
             </span>
           </div>
           <div className="p-3.5 text-xs text-slate-600 space-y-2">
             <div className="flex items-start gap-2">
               <Flame className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
               <div>
-                <span className="font-semibold text-slate-800">+50 очков</span> за каждую впервые решённую задачу!
+                <span className="font-semibold text-slate-800">+50 points</span> for each problem solved for the first time!
               </div>
             </div>
             <div className="p-2 bg-slate-50 rounded border border-slate-200 text-[11px] leading-relaxed">
-              Начальный рейтинг нового участника — <b>1200</b> (Ученик). Стремитесь к званию Мастера (2200+) и Гроссмейстера (2400+)!
+              A new participant starts with a rating of <b>1200</b> (Pupil). Aim for the Master rank (2200+) and Grandmaster (2400+)!
             </div>
           </div>
         </div>
@@ -275,7 +275,7 @@ export const ProblemList: React.FC<ProblemListProps> = ({
         <div className="bg-white border border-[#b9c0c7] rounded overflow-hidden shadow-2xs">
           <div className="bg-[#e1e7ee] px-3.5 py-2 border-b border-[#b9c0c7] flex items-center justify-between">
             <span className="text-xs font-bold text-slate-800 uppercase">
-              Лидеры раунда
+              Round leaders
             </span>
           </div>
           <div className="divide-y divide-slate-100">

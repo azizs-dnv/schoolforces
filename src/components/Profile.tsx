@@ -36,16 +36,16 @@ export const Profile: React.FC<ProfileProps> = ({
         <div className="w-12 h-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center mx-auto">
           <UserIcon className="w-6 h-6" />
         </div>
-        <h2 className="text-lg font-bold text-slate-800">Профиль участника</h2>
+        <h2 className="text-lg font-bold text-slate-800">Participant profile</h2>
         <p className="text-xs text-slate-600">
-          Вы вошли как гость. Пожалуйста, выполните вход или зарегистрируйтесь, чтобы отслеживать свой личный рейтинг, решённые задачи и историю посылок.
+          You are signed in as a guest. Please sign in to track your rating, solved problems, and submission history.
         </p>
         <button
           onClick={onOpenLogin}
           className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#3b5998] hover:bg-[#2b4270] text-white font-semibold text-xs rounded transition shadow-2xs cursor-pointer"
         >
           <LogIn className="w-3.5 h-3.5" />
-          <span>Войти / Зарегистрироваться</span>
+          <span>Sign in / Register</span>
         </button>
       </div>
     );
@@ -63,15 +63,15 @@ export const Profile: React.FC<ProfileProps> = ({
   if (rankInfo.nextRankThreshold) {
     // Current tier floor:
     const floor =
-      rankInfo.title === 'Новичок'
+      rankInfo.title === 'Newbie'
         ? 0
-        : rankInfo.title === 'Ученик'
+        : rankInfo.title === 'Pupil'
         ? 1200
-        : rankInfo.title === 'Специалист'
+        : rankInfo.title === 'Specialist'
         ? 1400
-        : rankInfo.title === 'Эксперт'
+        : rankInfo.title === 'Expert'
         ? 1600
-        : rankInfo.title === 'Кандидат в мастера'
+        : rankInfo.title === 'Candidate Master'
         ? 1900
         : 2200;
 
@@ -115,10 +115,10 @@ export const Profile: React.FC<ProfileProps> = ({
               <div className="flex items-center gap-4 text-xs text-slate-500">
                 <span className="flex items-center gap-1">
                   <Calendar className="w-3.5 h-3.5" />
-                  Регистрация: {currentUser.registeredAt}
+                  Registered: {currentUser.registeredAt}
                 </span>
                 <span>•</span>
-                <span>Организация: Школа программирования</span>
+                <span>Organization: School of Programming</span>
               </div>
             </div>
           </div>
@@ -127,7 +127,7 @@ export const Profile: React.FC<ProfileProps> = ({
           <div className="flex items-center gap-6 bg-slate-50 p-3 rounded border border-slate-200 self-stretch md:self-auto justify-around">
             <div className="text-center px-2">
               <div className="text-[10px] uppercase font-bold text-slate-500">
-                Текущий рейтинг
+                Current rating
               </div>
               <div className="text-2xl font-mono font-black" style={{ color: rankInfo.color }}>
                 {currentUser.rating}
@@ -138,7 +138,7 @@ export const Profile: React.FC<ProfileProps> = ({
 
             <div className="text-center px-2">
               <div className="text-[10px] uppercase font-bold text-slate-500">
-                Макс. рейтинг
+                Max rating
               </div>
               <div className="text-xl font-mono font-bold text-slate-700">
                 {currentUser.maxRating}
@@ -149,7 +149,7 @@ export const Profile: React.FC<ProfileProps> = ({
 
             <div className="text-center px-2">
               <div className="text-[10px] uppercase font-bold text-slate-500">
-                Решено задач
+                Problems solved
               </div>
               <div className="text-xl font-mono font-bold text-emerald-700">
                 {currentUser.solvedProblems.length}
@@ -163,10 +163,10 @@ export const Profile: React.FC<ProfileProps> = ({
           <div className="mt-5 space-y-1.5">
             <div className="flex justify-between items-center text-xs">
               <span className="text-slate-600 font-medium">
-                Прогресс до звания <b>{rankInfo.nextRankTitle}</b> ({rankInfo.nextRankThreshold}):
+                Progress to rank <b>{rankInfo.nextRankTitle}</b> ({rankInfo.nextRankThreshold}):
               </span>
               <span className="font-mono font-bold text-blue-700">
-                Осталось {pointsToNext} очков (решите {Math.ceil(pointsToNext / 50)} задач)
+                Remaining {pointsToNext} points (solve {Math.ceil(pointsToNext / 50)} problems)
               </span>
             </div>
             <div className="w-full h-2.5 bg-slate-100 rounded-full border border-slate-200 overflow-hidden">
@@ -185,14 +185,14 @@ export const Profile: React.FC<ProfileProps> = ({
           <div className="bg-[#e1e7ee] px-4 py-2.5 border-b border-[#b9c0c7] flex items-center justify-between">
             <h2 className="text-xs font-bold text-slate-800 uppercase tracking-wide flex items-center gap-1.5">
               <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-              <span>Решённые задачи ({solvedProblemsList.length})</span>
+              <span>Solved problems ({solvedProblemsList.length})</span>
             </h2>
           </div>
 
           <div className="p-4">
             {solvedProblemsList.length === 0 ? (
               <div className="text-center py-6 text-xs text-slate-500">
-                Вы пока не решили ни одной задачи. Перейдите во вкладку «Задачи» и отправьте первое решение!
+                You have not solved any problems yet. Go to the Problems tab and submit your first solution!
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
@@ -223,14 +223,14 @@ export const Profile: React.FC<ProfileProps> = ({
           <div className="bg-[#e1e7ee] px-4 py-2.5 border-b border-[#b9c0c7] flex items-center justify-between">
             <h2 className="text-xs font-bold text-slate-800 uppercase tracking-wide flex items-center gap-1.5">
               <FileCode2 className="w-4 h-4 text-blue-600" />
-              <span>История посылок ({userSubmissions.length})</span>
+              <span>Submission history ({userSubmissions.length})</span>
             </h2>
           </div>
 
           <div className="divide-y divide-slate-100 max-h-80 overflow-y-auto">
             {userSubmissions.length === 0 ? (
               <div className="text-center py-6 text-xs text-slate-500">
-                У вас пока нет отправленных посылок.
+                You have not submitted any solutions yet.
               </div>
             ) : (
               userSubmissions.map(sub => (
@@ -257,7 +257,7 @@ export const Profile: React.FC<ProfileProps> = ({
                       {sub.verdict}
                     </span>
                     <div className="text-[10px] text-slate-400 font-mono">
-                      {sub.timeMs} мс
+                      {sub.timeMs} ms
                     </div>
                   </div>
                 </div>

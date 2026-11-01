@@ -3,8 +3,8 @@ import { User, Submission, Contest } from '../types';
 export const INITIAL_CONTESTS: Contest[] = [
   {
     id: 'round-1',
-    title: 'Школьный этап ВсОШ по информатике 2026',
-    description: 'Официальный школьный тур олимпиады. Задачи A, B, C, D. Система оценивания ICPC / Codeforces.',
+    title: '2026 All-Russian School Olympiad in Informatics: School Stage',
+    description: 'The official school-stage olympiad round. Problems A, B, C, and D. ICPC / Codeforces scoring system.',
     durationMinutes: 120,
     status: 'running',
     startedAt: Date.now() - 35 * 60 * 1000, // Started 35 minutes ago
@@ -12,23 +12,23 @@ export const INITIAL_CONTESTS: Contest[] = [
     problemIds: ['A', 'B', 'C', 'D'],
     allowedStudents: ['tourist_junior', 'coder_ivan', 'anna_school9', 'newbie_petya'],
     hideCodeDuringContest: true,
-    author: 'Учитель информатики'
+    author: 'Computer Science Teacher'
   },
   {
     id: 'round-2',
-    title: 'Тренировочный контест для 7-9 классов',
-    description: 'Тренировочные олимпиадные задачи для начинающих. Ожидает запуска преподавателем.',
+    title: 'Practice Contest for Grades 7–9',
+    description: 'Practice olympiad problems for beginners. Waiting to be started by the teacher.',
     durationMinutes: 90,
     status: 'upcoming',
     problemIds: ['A', 'B', 'C'],
     allowedStudents: ['*'], // Open to all students
     hideCodeDuringContest: true,
-    author: 'Учитель информатики'
+    author: 'Computer Science Teacher'
   },
   {
     id: 'round-autumn',
-    title: 'Осенняя школьная олимпиада (Завершена)',
-    description: 'Прошедшее соревнование. Результаты зафиксированы.',
+    title: 'Autumn School Olympiad (Finished)',
+    description: 'A completed contest. Results have been finalized.',
     durationMinutes: 150,
     status: 'finished',
     startedAt: Date.now() - 86400 * 1000 * 5,
@@ -36,7 +36,7 @@ export const INITIAL_CONTESTS: Contest[] = [
     problemIds: ['A', 'B', 'C', 'D', 'E'],
     allowedStudents: ['*'],
     hideCodeDuringContest: false,
-    author: 'Учитель информатики'
+    author: 'Computer Science Teacher'
   }
 ];
 
@@ -98,10 +98,10 @@ export const INITIAL_SUBMISSIONS: Submission[] = [
     id: 10842,
     handle: 'tourist_junior',
     problemId: 'D',
-    problemTitle: 'Переворот строки',
+    problemTitle: 'Reverse a String',
     language: 'cpp',
     code: '#include <iostream>\n#include <string>\n#include <algorithm>\nusing namespace std;\nint main() {\n  string s;\n  cin >> s;\n  reverse(s.begin(), s.end());\n  cout << s << endl;\n  return 0;\n}',
-    submittedAt: 'Сегодня 14:22',
+    submittedAt: 'Today 14:22',
     verdict: 'Accepted',
     totalTests: 8,
     passedTests: 8,
@@ -114,10 +114,10 @@ export const INITIAL_SUBMISSIONS: Submission[] = [
     id: 10841,
     handle: 'coder_ivan',
     problemId: 'C',
-    problemTitle: 'Поиск максимума из трёх чисел',
+    problemTitle: 'Find the Maximum of Three Numbers',
     language: 'python',
     code: 'a, b, c = map(int, input().split())\nprint(max(a, b, c))',
-    submittedAt: 'Сегодня 13:50',
+    submittedAt: 'Today 13:50',
     verdict: 'Accepted',
     totalTests: 8,
     passedTests: 8,
@@ -130,10 +130,10 @@ export const INITIAL_SUBMISSIONS: Submission[] = [
     id: 10840,
     handle: 'anna_school9',
     problemId: 'A',
-    problemTitle: 'Сложение A + B',
+    problemTitle: 'A + B',
     language: 'javascript',
     code: 'const fs = require("fs");\nconst [a, b] = fs.readFileSync(0, "utf-8").trim().split(/\\s+/).map(Number);\nconsole.log(a + b);',
-    submittedAt: 'Сегодня 13:38',
+    submittedAt: 'Today 13:38',
     verdict: 'Accepted',
     totalTests: 8,
     passedTests: 8,
@@ -146,10 +146,10 @@ export const INITIAL_SUBMISSIONS: Submission[] = [
     id: 10839,
     handle: 'coder_ivan',
     problemId: 'A',
-    problemTitle: 'Сложение A + B',
+    problemTitle: 'A + B',
     language: 'cpp',
     code: '#include <iostream>\nusing namespace std;\nint main() {\n  long long a, b;\n  cin >> a >> b;\n  cout << a + b << endl;\n  return 0;\n}',
-    submittedAt: 'Сегодня 13:35',
+    submittedAt: 'Today 13:35',
     verdict: 'Accepted',
     totalTests: 8,
     passedTests: 8,
@@ -162,17 +162,17 @@ export const INITIAL_SUBMISSIONS: Submission[] = [
     id: 10838,
     handle: 'newbie_petya',
     problemId: 'A',
-    problemTitle: 'Сложение A + B',
+    problemTitle: 'A + B',
     language: 'python',
     code: 'a, b = map(int, input().split())\nprint(a - b)', // wrong minus
-    submittedAt: 'Сегодня 13:34',
+    submittedAt: 'Today 13:34',
     verdict: 'Wrong Answer',
     testFailed: 1,
     totalTests: 8,
     passedTests: 0,
     timeMs: 20,
     memoryKb: 1300,
-    errorMessage: 'Неверный ответ на тесте 1',
+    errorMessage: 'Wrong answer on test 1',
     contestId: 'round-1',
     contestMinute: 4
   }
