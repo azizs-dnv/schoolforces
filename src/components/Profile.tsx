@@ -10,11 +10,13 @@ import {
   FileCode2,
   ArrowRight,
   TrendingUp,
-  LogIn
+  LogIn,
+  Medal
 } from 'lucide-react';
 
 interface ProfileProps {
   currentUser: User | null;
+  users: User[];
   problems: Problem[];
   submissions: Submission[];
   onSelectProblem: (problem: Problem) => void;
@@ -24,6 +26,7 @@ interface ProfileProps {
 
 export const Profile: React.FC<ProfileProps> = ({
   currentUser,
+  users,
   problems,
   submissions,
   onSelectProblem,
@@ -53,6 +56,33 @@ export const Profile: React.FC<ProfileProps> = ({
 
   const rankInfo = getRankInfo(currentUser.rating);
   const userSubmissions = submissions.filter(s => s.handle === currentUser.handle);
+  const ratingChanges = [...(currentUser.ratingChanges ?? [])]
+    .sort((a, b) => Date.parse(a.ratedAt) - Date.parse(b.ratedAt));
+  const orderedUsers = [...users].sort((a, b) => b.rating - a.rating);
+  const userIndex = orderedUsers.findIndex(user => user.handle === currentUser.handle);
+  const ratingRank = userIndex < 0
+    ? 0
+    : orderedUsers.findIndex(user => user.rating === orderedUsers[userIndex].rating) + 1;
+  const contestHistory = [...ratingChanges].reverse();
+  const chartRatings = ratingChanges.length > 0
+    ? [ratingChanges[0].oldRating, ...ratingChanges.map(change => change.newRating)]
+    : [currentUser.rating];
+  const chartWidth = 720;
+  const chartHeight = 240;
+  const chartPadding = { top: 20, right: 24, bottom: 32, left: 52 };
+  const chartMin = Math.max(0, Math.min(...chartRatings) - 100);
+  const chartMax = Math.max(...chartRatings) + 100;
+  const chartRange = Math.max(200, chartMax - chartMin);
+  const chartPoints = chartRatings.map((rating, index) => ({
+    rating,
+    x: chartRatings.length === 1
+      ? (chartWidth - chartPadding.left - chartPadding.right) / 2 + chartPadding.left
+      : chartPadding.left + index * (chartWidth - chartPadding.left - chartPadding.right) / (chartRatings.length - 1),
+    y: chartPadding.top + (chartMax - rating) * (chartHeight - chartPadding.top - chartPadding.bottom) / chartRange
+  }));
+  const chartPath = chartPoints.map((point, index) =>
+    `${index === 0 ? 'M' : 'L'} ${point.x} ${point.y}`
+  ).join(' ');
 
   // Solved problem objects
   const solvedProblemsList = problems.filter(p => currentUser.solvedProblems.includes(p.id));
@@ -166,7 +196,7 @@ export const Profile: React.FC<ProfileProps> = ({
                 Progress to rank <b>{rankInfo.nextRankTitle}</b> ({rankInfo.nextRankThreshold}):
               </span>
               <span className="font-mono font-bold text-blue-700">
-                Remaining {pointsToNext} points (solve {Math.ceil(pointsToNext / 50)} problems)
+                {pointsToNext} rating points to the next rank
               </span>
             </div>
             <div className="w-full h-2.5 bg-slate-100 rounded-full border border-slate-200 overflow-hidden">
@@ -177,6 +207,118 @@ export const Profile: React.FC<ProfileProps> = ({
             </div>
           </div>
         )}
+      </div>
+
+      <div className="bg-white border border-[#b9c0c7] rounded overflow-hidden shadow-2xs">
+        <div className="bg-[#e1e7ee] px-4 py-2.5 border-b border-[#b9c0c7] flex flex-wrap items-center justify-between gap-2">
+          <h2 className="text-xs font-bold text-slate-800 uppercase tracking-wide flex items-center gap-1.5">
+            <TrendingUp className="w-4 h-4 text-blue-600" />
+            Rating history
+          </h2>
+          <div className="flex items-center gap-4 text-xs">
+            <span className="text-slate-500">Global place</span>
+            <span className="font-bold text-slate-800">#{ratingRank || '—'} of {users.length}</span>
+          </div>
+        </div>
+
+        <div className="p-3 sm:p-5">
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-1 text-xs text-slate-600 mb-2">
+            <span>
+              Rating: <b style={{ color: rankInfo.color }}>{currentUser.rating}</b>
+            </span>
+            <span>
+              Best: <b className="text-slate-800">{currentUser.maxRating}</b>
+            </span>
+            <span>
+              Rated contests: <b className="text-slate-800">{ratingChanges.length}</b>
+            </span>
+          </div>
+          <p className="mb-2 text-[11px] text-slate-500">
+            Rating changes are based on contest placement using an Elo-style calculation.
+          </p>
+
+          <div className="w-full overflow-x-auto">
+            <svg
+              viewBox={`0 0 ${chartWidth} ${chartHeight}`}
+              role="img"
+              aria-label={`Rating history chart. Current rating ${currentUser.rating}.`}
+              className="block w-full min-w-[22rem] h-48 sm:h-60"
+            >
+              {[0, 1, 2, 3, 4].map(tick => {
+                const y = chartPadding.top + tick * (chartHeight - chartPadding.top - chartPadding.bottom) / 4;
+                const value = Math.round(chartMax - tick * chartRange / 4);
+                return (
+                  <g key={tick}>
+                    <line
+                      x1={chartPadding.left}
+                      x2={chartWidth - chartPadding.right}
+                      y1={y}
+                      y2={y}
+                      stroke="#e2e8f0"
+                      strokeDasharray="3 4"
+                    />
+                    <text x={chartPadding.left - 8} y={y + 4} textAnchor="end" fill="#64748b" fontSize="11">
+                      {value}
+                    </text>
+                  </g>
+                );
+              })}
+              <path d={chartPath} fill="none" stroke="#2563eb" strokeWidth="3" strokeLinejoin="round" strokeLinecap="round" />
+              {chartPoints.map((point, index) => (
+                <circle key={`${index}-${point.rating}`} cx={point.x} cy={point.y} r="4" fill="#2563eb" stroke="white" strokeWidth="2">
+                  <title>{`${index === 0 ? 'Starting rating' : ratingChanges[index - 1]?.contestTitle}: ${point.rating}`}</title>
+                </circle>
+              ))}
+              <text x={chartPadding.left} y={chartHeight - 8} fill="#64748b" fontSize="11">
+                {ratingChanges.length ? new Date(ratingChanges[0].ratedAt).toLocaleDateString() : 'First rated contest'}
+              </text>
+              <text x={chartWidth - chartPadding.right} y={chartHeight - 8} textAnchor="end" fill="#64748b" fontSize="11">
+                {ratingChanges.length ? new Date(ratingChanges[ratingChanges.length - 1].ratedAt).toLocaleDateString() : 'No contest results yet'}
+              </text>
+            </svg>
+          </div>
+
+          {contestHistory.length === 0 ? (
+            <p className="mt-2 text-center text-xs text-slate-500">
+              Your rating history will appear here after you participate in a finished contest.
+            </p>
+          ) : (
+            <div className="mt-4 overflow-x-auto">
+              <table className="w-full min-w-[34rem] text-left text-xs border-collapse">
+                <thead>
+                  <tr className="border-b border-slate-200 text-slate-500">
+                    <th className="py-2 pr-3 font-semibold">Contest</th>
+                    <th className="py-2 px-3 text-center font-semibold">Place</th>
+                    <th className="py-2 px-3 text-right font-semibold">Old rating</th>
+                    <th className="py-2 px-3 text-right font-semibold">Change</th>
+                    <th className="py-2 pl-3 text-right font-semibold">New rating</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {contestHistory.map(change => (
+                    <tr key={`${change.contestId}-${change.ratedAt}`}>
+                      <td className="py-2 pr-3">
+                        <div className="font-semibold text-slate-800">{change.contestTitle}</div>
+                        <div className="text-[11px] text-slate-500">{new Date(change.ratedAt).toLocaleDateString()}</div>
+                      </td>
+                      <td className="py-2 px-3 text-center font-mono">
+                        <span className="inline-flex items-center gap-1">
+                          <Medal className="w-3.5 h-3.5 text-amber-500" />
+                          {change.rank} / {change.participants}
+                        </span>
+                      </td>
+                      <td className="py-2 px-3 text-right font-mono">{change.oldRating}</td>
+                      <td className={`py-2 px-3 text-right font-mono font-bold ${change.delta >= 0 ? 'text-emerald-700' : 'text-red-600'}`}>
+                        {change.delta > 0 ? '+' : ''}{change.delta}
+                      </td>
+                      <td className="py-2 pl-3 text-right font-mono font-bold">{change.newRating}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

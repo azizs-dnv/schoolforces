@@ -104,7 +104,7 @@ console.log(a + b);`}
             • <b>Teacher panel security:</b> Teacher actions require an authenticated server session. Student passwords are stored as salted hashes on the server.
           </p>
           <p>
-            • <b>Evaluation:</b> This version runs the judge in the browser. Hidden tests and verdicts are not tamper-proof, so use it for supervised LAN practice, not high-stakes contests.
+            • <b>Evaluation:</b> Submissions are compiled and run on the server in a restricted container and checked against hidden tests. Container isolation reduces risk but is not a guarantee against every escape or denial-of-service attack, so use this for supervised LAN practice, not high-stakes competitions.
           </p>
         </div>
       </div>

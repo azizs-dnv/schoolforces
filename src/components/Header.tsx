@@ -32,11 +32,11 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="h-1 bg-gradient-to-r from-red-600 via-blue-600 to-amber-400 w-full" />
 
       {/* Main Header Container */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex flex-col md:flex-row md:items-center justify-between gap-3">
+      <div className="app-header-main max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex flex-col md:flex-row md:items-center justify-between gap-3">
         {/* Brand / Logo */}
         <div 
           onClick={() => setActiveTab('contests')}
-          className="flex items-center gap-3 cursor-pointer group select-none"
+          className="app-brand flex items-center gap-3 cursor-pointer group select-none"
         >
           <div className="flex items-end gap-1 h-9 px-1 py-0.5">
             <span className="w-2.5 h-5 bg-amber-400 rounded-t-xs transition-transform group-hover:scale-y-110"></span>
@@ -49,18 +49,18 @@ export const Header: React.FC<HeaderProps> = ({
               <span className="text-2xl font-black tracking-tight text-slate-800 font-sans">
                 SCHOOL<span className="text-blue-700">FORCES</span>
               </span>
-              <span className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 bg-blue-100 text-blue-800 rounded border border-blue-200">
+              <span className="app-brand-badge text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 bg-blue-100 text-blue-800 rounded border border-blue-200">
                 School Edition
               </span>
             </div>
-            <p className="text-xs text-slate-500 font-medium">
+            <p className="app-brand-tagline text-xs text-slate-500 font-medium">
               Programming contests and olympiads for students
             </p>
           </div>
         </div>
 
         {/* Auth / Teacher controls */}
-        <div className="flex items-center gap-2.5 self-end md:self-auto text-sm">
+        <div className="app-auth-controls flex items-center gap-2.5 self-end md:self-auto text-sm">
           {/* Teacher panel button */}
           {isTeacherAuthenticated ? (
             <div className="flex items-center gap-2 bg-red-50 border border-red-200 rounded px-2.5 py-1 text-xs">
@@ -90,7 +90,7 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Student Auth status */}
           {currentUser ? (
-            <div className="flex items-center gap-3 bg-slate-50 border border-slate-200 rounded px-3 py-1.5 shadow-2xs">
+            <div className="app-student-status flex items-center gap-3 bg-slate-50 border border-slate-200 rounded px-3 py-1.5 shadow-2xs">
               <div className="flex items-center gap-2">
                 <span className="text-xs text-slate-500">Student:</span>
                 <button
@@ -131,7 +131,7 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Codeforces classic navigation bar */}
       <nav className="bg-[#3b5998] border-t border-[#2e477a] text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center overflow-x-auto scrollbar-none">
+        <div className="app-primary-nav max-w-7xl mx-auto px-4 sm:px-6 flex items-center overflow-x-auto scrollbar-none">
           {/* TAB 1: CONTESTS (BEFORE PROBLEMS) */}
           <button
             onClick={() => setActiveTab('contests')}

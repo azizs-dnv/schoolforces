@@ -1,0 +1,9 @@
+FROM python:3.13-slim
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends g++ nodejs \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY judge-runner.py /opt/schoolforces/judge-runner.py
+
+ENTRYPOINT ["python3", "/opt/schoolforces/judge-runner.py"]

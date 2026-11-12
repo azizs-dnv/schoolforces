@@ -65,6 +65,15 @@ export function transpileCppToJS(cppCode: string): string {
   for (let rawLine of lines) {
     let line = rawLine;
 
+    const conditionalCinMatch = line.match(/if\s*\(\s*cin\s*>>\s*([^)]*)\)/);
+    if (conditionalCinMatch) {
+      const vars = conditionalCinMatch[1].split('>>').map(v => v.trim());
+      const condition = vars
+        .map(v => `(${v} = __readTokenParsed()) !== ''`)
+        .join(' && ');
+      line = line.replace(conditionalCinMatch[0], `if (${condition})`);
+    }
+
     // Handle cin >> a >> b >> c;
     const cinMatch = line.match(/cin\s*>>\s*([^;]+);/);
     if (cinMatch) {
@@ -94,6 +103,11 @@ export function transpileCppToJS(cppCode: string): string {
         line = line.replace(coutMatch[0], `__print("");`);
       }
     }
+
+    line = line.replace(
+      /\bfor\s*\(\s*(?:long\s+long|int)\s+([a-zA-Z_]\w*)\s*=/,
+      'for (let $1 ='
+    );
 
     // Handle C++ primitive declarations: int a, b; long long fact = 1; string s;
     const declMatch = line.match(/^(\s*)(?:long\s+long|int|double|float|char|string|bool)\s+([^;]+);/);
@@ -146,9 +160,13 @@ export function transpilePythonToJS(pythonCode: string): string {
     const match = lineCode.match(/^(\s*)/);
     const indent = match ? match[1].length : 0;
     const trimmed = lineCode.trim();
+    const branchContinuation = /^(elif|else)\b/.test(trimmed);
 
     while (indentStack.length > 1 && indent < indentStack[indentStack.length - 1]) {
       indentStack.pop();
+      if (branchContinuation && indent === indentStack[indentStack.length - 1]) {
+        break;
+      }
       jsLines.push(' '.repeat(indentStack[indentStack.length - 1]) + '}');
     }
 
@@ -159,6 +177,10 @@ export function transpilePythonToJS(pythonCode: string): string {
       continue;
     }
 
+    converted = converted.replace(/map\(int,\s*input\(\)\.split\(\)\)/g, '__readInts()');
+    converted = converted.replace(/\bint\(input\(\)(?:\.strip\(\))?\)/g, match =>
+      `parseInt(${match.slice(4, -1).replace(/\.strip\(\)$/, '.trim()')}, 10)`
+    );
     converted = converted.replace(/(\w+)\[::-1\]/g, "($1).split('').reverse().join('')");
     converted = converted.replace(/\.strip\(\)/g, '.trim()');
     converted = converted.replace(/\.lower\(\)/g, '.toLowerCase()');
@@ -173,8 +195,9 @@ export function transpilePythonToJS(pythonCode: string): string {
     converted = converted.replace(/\bor\b/g, '||');
     converted = converted.replace(/\bnot\b/g, '!');
 
-    converted = converted.replace(/map\(int,\s*input\(\)\.split\(\)\)/g, "__readInts()");
     converted = converted.replace(/map\(int,\s*([^)]+)\)/g, "$1.map(x => parseInt(x, 10))");
+    converted = converted.replace(/\bmax\(([^()]*)\)/g, 'Math.max($1)');
+    converted = converted.replace(/\bmin\(([^()]*)\)/g, 'Math.min($1)');
 
     converted = converted.replace(/input\(\)/g, '__input()');
     converted = converted.replace(/print\((.*)\)/g, '__print($1)');
@@ -205,7 +228,7 @@ export function transpilePythonToJS(pythonCode: string): string {
           if (args.length === 1) {
             converted = `for (let ${loopVar} = 0; ${loopVar} < ${args[0]}; ${loopVar}++)`;
           } else if (args.length === 2) {
-            converted = `for (let ${loopVar} = ${args[0]}; ${loopVar} <= ${args[1]}; ${loopVar}++)`;
+            converted = `for (let ${loopVar} = ${args[0]}; ${loopVar} < ${args[1]}; ${loopVar}++)`;
           }
         }
       } else if (/^while\s+/.test(converted)) {

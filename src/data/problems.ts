@@ -40,23 +40,12 @@ export const PROBLEMS: Problem[] = [
 using namespace std;
 
 int main() {
-    long long a, b;
-    if (cin >> a >> b) {
-        cout << a + b << endl;
-    }
+    // TODO: Read two integers and print their sum.
     return 0;
 }`,
-      python: `# Read two numbers and output their sum
-a, b = map(int, input().split())
-print(a + b)`,
+      python: `# TODO: Read two integers and print their sum.`,
       javascript: `const fs = require('fs');
-const tokens = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/);
-
-if (tokens.length >= 2) {
-  const a = parseInt(tokens[0], 10);
-  const b = parseInt(tokens[1], 10);
-  console.log(a + b);
-}`
+// TODO: Read two integers and print their sum.`
     }
   },
   {
@@ -97,28 +86,12 @@ if (tokens.length >= 2) {
 using namespace std;
 
 int main() {
-    long long n;
-    cin >> n;
-    if (n % 2 == 0) {
-        cout << "EVEN" << endl;
-    } else {
-        cout << "ODD" << endl;
-    }
+    // TODO: Read an integer and print whether it is even or odd.
     return 0;
 }`,
-      python: `n = int(input().strip())
-if n % 2 == 0:
-    print("EVEN")
-else:
-    print("ODD")`,
+      python: `# TODO: Read an integer and print whether it is even or odd.`,
       javascript: `const fs = require('fs');
-const n = parseInt(fs.readFileSync(0, 'utf-8').trim(), 10);
-
-if (n % 2 === 0) {
-  console.log("EVEN");
-} else {
-  console.log("ODD");
-}`
+// TODO: Read an integer and print whether it is even or odd.`
     }
   },
   {
@@ -159,16 +132,12 @@ if (n % 2 === 0) {
 using namespace std;
 
 int main() {
-    long long a, b, c;
-    cin >> a >> b >> c;
-    cout << max({a, b, c}) << endl;
+    // TODO: Read three integers and print the largest.
     return 0;
 }`,
-      python: `a, b, c = map(int, input().split())
-print(max(a, b, c))`,
+      python: `# TODO: Read three integers and print the largest.`,
       javascript: `const fs = require('fs');
-const nums = fs.readFileSync(0, 'utf-8').trim().split(/\\s+/).map(Number);
-console.log(Math.max(...nums));`
+// TODO: Read three integers and print the largest.`
     }
   },
   {
@@ -210,17 +179,12 @@ console.log(Math.max(...nums));`
 using namespace std;
 
 int main() {
-    string s;
-    cin >> s;
-    reverse(s.begin(), s.end());
-    cout << s << endl;
+    // TODO: Read a string and print it in reverse.
     return 0;
 }`,
-      python: `s = input().strip()
-print(s[::-1])`,
+      python: `# TODO: Read a string and print it in reverse.`,
       javascript: `const fs = require('fs');
-const s = fs.readFileSync(0, 'utf-8').trim();
-console.log(s.split('').reverse().join(''));`
+// TODO: Read a string and print it in reverse.`
     }
   },
   {
@@ -260,28 +224,12 @@ console.log(s.split('').reverse().join(''));`
 using namespace std;
 
 int main() {
-    int n;
-    cin >> n;
-    long long fact = 1;
-    for (int i = 2; i <= n; i++) {
-        fact *= i;
-    }
-    cout << fact << endl;
+    // TODO: Read a number and print its factorial.
     return 0;
 }`,
-      python: `n = int(input().strip())
-res = 1
-for i in range(1, n + 1):
-    res *= i
-print(res)`,
+      python: `# TODO: Read a number and print its factorial.`,
       javascript: `const fs = require('fs');
-const n = parseInt(fs.readFileSync(0, 'utf-8').trim(), 10);
-
-let fact = 1;
-for (let i = 2; i <= n; i++) {
-  fact *= i;
-}
-console.log(fact);`
+// TODO: Read a number and print its factorial.`
     }
   }
 ];

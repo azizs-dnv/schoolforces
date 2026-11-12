@@ -22,7 +22,7 @@ export const SubmissionModal: React.FC<SubmissionModalProps> = ({ submission, on
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
-      <div className="bg-white border border-[#b9c0c7] rounded-lg shadow-xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]">
+      <div className="app-modal-panel bg-white border border-[#b9c0c7] rounded-lg shadow-xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]">
         {/* Header */}
         <div className="bg-[#3b5998] px-4 py-3 text-white flex items-center justify-between">
           <div className="flex items-center gap-2">

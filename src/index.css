@@ -1,1 +1,126 @@
 @import "tailwindcss";
+
+html,
+body,
+#root {
+  min-height: 100%;
+  width: 100%;
+  margin: 0;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+@media (max-width: 640px) {
+  .app-header-main {
+    gap: 0.75rem;
+    padding: 0.75rem;
+  }
+
+  .app-brand {
+    gap: 0.5rem;
+  }
+
+  .app-brand > div:last-child > div:first-child > span:first-child {
+    font-size: 1.2rem;
+    line-height: 1.5rem;
+  }
+
+  .app-brand-badge,
+  .app-brand-tagline {
+    display: none;
+  }
+
+  .app-auth-controls {
+    align-self: stretch;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .app-auth-controls > .h-4.w-px {
+    display: none;
+  }
+
+  .app-student-status {
+    max-width: 100%;
+    gap: 0.5rem;
+    padding: 0.375rem 0.5rem;
+  }
+
+  .app-primary-nav {
+    gap: 0;
+    padding-inline: 0.25rem;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    scroll-snap-type: x proximity;
+  }
+
+  .app-primary-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .app-primary-nav > button {
+    flex: 0 0 auto;
+    min-height: 44px;
+    padding: 0.625rem 0.75rem;
+    font-size: 0.68rem;
+    scroll-snap-align: start;
+  }
+
+  .app-main {
+    padding: 1rem 0.75rem;
+  }
+
+  .app-main > * {
+    min-width: 0;
+  }
+
+  .app-main pre {
+    max-width: 100%;
+  }
+
+  .app-main .overflow-x-auto > table {
+    min-width: 36rem;
+  }
+
+  .app-problem-statement {
+    padding: 1rem;
+  }
+
+  .app-code-editor {
+    position: static;
+    top: auto;
+  }
+
+  .app-modal-panel {
+    max-height: calc(100dvh - 1.5rem);
+    overflow-y: auto;
+  }
+
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+
+  .app-footer {
+    margin-top: 2rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .app-brand > div:last-child > div:first-child > span:first-child {
+    font-size: 1.05rem;
+  }
+
+  .app-student-status > div:first-child > span:first-child {
+    display: none;
+  }
+
+  .app-primary-nav > button {
+    padding-inline: 0.625rem;
+    font-size: 0.64rem;
+  }
+}

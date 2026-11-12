@@ -85,6 +85,8 @@ export const ContestView: React.FC<ContestViewProps> = ({
 
   // Problems in this contest
   const contestProblems = allProblems.filter(p => contest.problemIds.includes(p.id));
+  const isContestRunning = contest.status === 'running' &&
+    (!contest.endsAt || contest.endsAt > Date.now());
 
   // Contest submissions
   const contestSubmissions = submissions.filter(s => s.contestId === contest.id);
@@ -466,7 +468,7 @@ export const ContestView: React.FC<ContestViewProps> = ({
             <span className="font-bold text-slate-800 uppercase tracking-wide">
               Contest submissions ({contestSubmissions.length})
             </span>
-            {contest.hideCodeDuringContest && !isTeacherAuthenticated && (
+            {isContestRunning && !isTeacherAuthenticated && (
               <span className="text-slate-500 flex items-center gap-1">
                 <Lock className="w-3 h-3" />
                 <span>Other participants’ code is hidden during the contest</span>

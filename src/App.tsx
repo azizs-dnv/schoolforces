@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { User, Problem, Submission, Contest, StudentRegistration } from './types';
+import { User, Problem, Submission, Contest, StudentRegistration, SubmissionRequest } from './types';
 import { apiRequest, AUTH_TOKEN_KEY, SharedState, updateSharedState } from './api';
 import { Header } from './components/Header';
 import { ContestsList } from './components/ContestsList';
@@ -61,7 +61,7 @@ export default function App() {
     let active = true;
     const refresh = async () => {
       try {
-        const state = await apiRequest<SharedState>('/api/state', {}, false);
+        const state = await apiRequest<SharedState>('/api/state');
         if (active) {
           applySharedState(state);
           setServerError(null);
@@ -281,24 +281,31 @@ export default function App() {
   };
 
   // Submission handler from ProblemDetail (with contest context)
-  const handleSubmitSuccess = async (newSub: Submission) => {
-    if (!currentUser) return;
-    const body = { ...newSub };
+  const handleSubmitSuccess = async (submission: SubmissionRequest): Promise<Submission> => {
+    if (!currentUser) throw new Error('Sign in before submitting a solution.');
+    const body = { ...submission };
     if (selectedContest && selectedContest.status === 'running') {
       body.contestId = selectedContest.id;
     }
     try {
-      const result = await apiRequest<SharedState & { currentUser: User; isFirstSolve: boolean }>(
+      const result = await apiRequest<SharedState & {
+        currentUser: User;
+        isFirstSolve: boolean;
+        submission: Submission;
+      }>(
         '/api/submissions',
         { method: 'POST', body: JSON.stringify(body) }
       );
       applyMutationResult(result);
       setCurrentUser(result.currentUser);
       if (result.isFirstSolve) {
-        showToast(`🎉 Congratulations! Problem ${newSub.problemId} solved! Rating: +50 (now ${result.currentUser.rating})`, 'success');
+        showToast(`🎉 Congratulations! Problem ${submission.problemId} solved!`, 'success');
       }
+      return result.submission;
     } catch (error) {
-      showToast(error instanceof Error ? error.message : 'Unable to save the submission.', 'error');
+      const message = error instanceof Error ? error.message : 'Unable to judge the submission.';
+      showToast(message, 'error');
+      throw error;
     }
   };
 
@@ -389,7 +396,7 @@ export default function App() {
       />
 
       {/* Main Content Area */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 flex-1 w-full">
+      <main className="app-main max-w-7xl mx-auto px-4 sm:px-6 py-6 flex-1 w-full">
         {/* 1. CONTESTS (FIRST TAB) */}
         {activeTab === 'contests' && (
           <>
@@ -402,8 +409,7 @@ export default function App() {
                     onBack={() => setSelectedProblem(null)}
                     onOpenLogin={() => setIsAuthModalOpen(true)}
                     onSubmitSuccess={sub => {
-                      void handleSubmitSuccess(sub);
-                      setSelectedProblem(null);
+                      return handleSubmitSuccess(sub);
                     }}
                   />
                 ) : (
@@ -484,6 +490,7 @@ export default function App() {
         {activeTab === 'profile' && (
           <Profile
             currentUser={currentUser}
+            users={users}
             problems={problems}
             submissions={submissions}
             onSelectProblem={problem => {
@@ -519,7 +526,7 @@ export default function App() {
       </main>
 
       {/* Codeforces Style Footer */}
-      <footer className="border-t border-[#b9c0c7] bg-white py-6 text-xs text-slate-500 mt-12">
+      <footer className="app-footer border-t border-[#b9c0c7] bg-white py-6 text-xs text-slate-500 mt-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <div className="flex items-end gap-0.5 h-4">

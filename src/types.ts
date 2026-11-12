@@ -2,11 +2,23 @@ export interface User {
   handle: string;
   rating: number;
   maxRating: number;
+  ratingChanges?: RatingChange[];
   solvedProblems: string[]; // problem IDs
   registeredAt: string;
   submissionsCount: number;
   fullName?: string;
   allowedContests?: string[]; // IDs of contests accessible by student, or ['*']
+}
+
+export interface RatingChange {
+  contestId: string;
+  contestTitle: string;
+  ratedAt: string;
+  rank: number;
+  participants: number;
+  oldRating: number;
+  newRating: number;
+  delta: number;
 }
 
 export type StudentRegistration = User & { password: string };
@@ -47,6 +59,7 @@ export type Verdict =
   | 'Accepted'
   | 'Wrong Answer'
   | 'Time Limit Exceeded'
+  | 'Output Limit Exceeded'
   | 'Runtime Error'
   | 'Compilation Error'
   | 'In queue'
@@ -76,6 +89,10 @@ export interface Submission {
   contestMinute?: number; // Minutes from contest start
 }
 
+export type SubmissionRequest = Pick<Submission, 'problemId' | 'language' | 'code'> & {
+  contestId?: string;
+};
+
 export interface RankInfo {
   title: string;
   titleEn: string;
@@ -100,6 +117,7 @@ export interface Contest {
   allowedStudents: string[]; // Handles of students or ['*'] for all
   hideCodeDuringContest: boolean;
   author?: string;
+  ratingAppliedAt?: number;
 }
 
 export interface ContestTaskResult {

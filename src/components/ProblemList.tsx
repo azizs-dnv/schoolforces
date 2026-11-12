@@ -262,11 +262,11 @@ export const ProblemList: React.FC<ProblemListProps> = ({
             <div className="flex items-start gap-2">
               <Flame className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
               <div>
-                <span className="font-semibold text-slate-800">+50 points</span> for each problem solved for the first time!
+              Your rating changes after contests based on your place and opponents' ratings.
               </div>
             </div>
             <div className="p-2 bg-slate-50 rounded border border-slate-200 text-[11px] leading-relaxed">
-              A new participant starts with a rating of <b>1200</b> (Pupil). Aim for the Master rank (2200+) and Grandmaster (2400+)!
+            New participants usually start at <b>1200</b> (Pupil). Practice problems improve your skills; contest results affect your rating.
             </div>
           </div>
         </div>

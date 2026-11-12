@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Problem, User, Verdict, Submission } from '../types';
-import { judgeSubmission, executeCode } from '../utils/judge';
+import { Problem, User, Verdict, Submission, SubmissionRequest } from '../types';
+import { executeCode } from '../utils/judge';
 import {
   ArrowLeft,
   Copy,
@@ -20,7 +20,7 @@ interface ProblemDetailProps {
   currentUser: User | null;
   onBack: () => void;
   onOpenLogin: () => void;
-  onSubmitSuccess: (submission: Submission, isFirstSolve: boolean) => void;
+  onSubmitSuccess: (submission: SubmissionRequest) => Promise<Submission>;
 }
 
 export const ProblemDetail: React.FC<ProblemDetailProps> = ({
@@ -43,7 +43,7 @@ export const ProblemDetail: React.FC<ProblemDetailProps> = ({
 
   // Submission judge state
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [testingProgress, setTestingProgress] = useState<{ current: number; total: number } | null>(null);
+  const [submissionError, setSubmissionError] = useState<string | null>(null);
   const [latestVerdict, setLatestVerdict] = useState<{
     verdict: Verdict;
     testFailed?: number;
@@ -102,54 +102,23 @@ export const ProblemDetail: React.FC<ProblemDetailProps> = ({
 
     setIsSubmitting(true);
     setLatestVerdict(null);
-
-    const submissionId = Math.floor(10000 + Math.random() * 90000);
-
-    const result = await judgeSubmission(
-      language,
-      code,
-      problem.sampleTests,
-      problem.hiddenTests,
-      (current, total) => {
-        setTestingProgress({ current, total });
-      }
-    );
-
-    setIsSubmitting(false);
-    setTestingProgress(null);
-
-    setLatestVerdict({
-      verdict: result.verdict,
-      testFailed: result.testFailed,
-      passedTests: result.passedTests,
-      totalTests: result.totalTests,
-      timeMs: result.timeMs,
-      errorMessage: result.errorMessage,
-      sampleFailedDetails: result.sampleFailedDetails
-    });
-
-    const isFirstSolve =
-      result.verdict === 'Accepted' && !currentUser.solvedProblems.includes(problem.id);
-
-    const newSubmission: Submission = {
-      id: submissionId,
-      handle: currentUser.handle,
-      problemId: problem.id,
-      problemTitle: problem.title,
-      language,
-      code,
-      submittedAt: 'Just now',
-      verdict: result.verdict,
-      testFailed: result.testFailed,
-      totalTests: result.totalTests,
-      passedTests: result.passedTests,
-      timeMs: result.timeMs,
-      memoryKb: result.memoryKb,
-      errorMessage: result.errorMessage,
-      sampleFailedDetails: result.sampleFailedDetails
-    };
-
-    onSubmitSuccess(newSubmission, isFirstSolve);
+    setSubmissionError(null);
+    try {
+      const submission = await onSubmitSuccess({ problemId: problem.id, language, code });
+      setLatestVerdict({
+        verdict: submission.verdict,
+        testFailed: submission.testFailed,
+        passedTests: submission.passedTests,
+        totalTests: submission.totalTests,
+        timeMs: submission.timeMs,
+        errorMessage: submission.errorMessage,
+        sampleFailedDetails: submission.sampleFailedDetails
+      });
+    } catch (error) {
+      setSubmissionError(error instanceof Error ? error.message : 'The server could not judge this submission.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -184,7 +153,7 @@ export const ProblemDetail: React.FC<ProblemDetailProps> = ({
           {isSolved && (
             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-bold rounded bg-emerald-50 text-emerald-700 border border-emerald-300">
               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-              <span>Solved by you (+50 rating points)</span>
+            <span>Solved by you</span>
             </span>
           )}
           <span className="px-2.5 py-1 text-xs font-mono font-bold rounded bg-slate-100 text-slate-800 border border-slate-300">
@@ -196,7 +165,7 @@ export const ProblemDetail: React.FC<ProblemDetailProps> = ({
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left column: Problem Statement in Codeforces format */}
         <div className="lg:col-span-7 space-y-6">
-          <div className="bg-white border border-[#b9c0c7] rounded p-6 shadow-2xs">
+          <div className="app-problem-statement bg-white border border-[#b9c0c7] rounded p-6 shadow-2xs">
             {/* Header info */}
             <div className="text-center pb-5 mb-5 border-b border-slate-200">
               <h1 className="text-2xl font-bold text-slate-900 tracking-tight font-sans">
@@ -382,7 +351,7 @@ export const ProblemDetail: React.FC<ProblemDetailProps> = ({
 
         {/* Right column: Code Editor & Submission Box */}
         <div className="lg:col-span-5 space-y-4">
-          <div className="bg-white border border-[#b9c0c7] rounded overflow-hidden shadow-2xs sticky top-4">
+          <div className="app-code-editor bg-white border border-[#b9c0c7] rounded overflow-hidden shadow-2xs sticky top-4">
             <div className="bg-[#e1e7ee] px-4 py-2.5 border-b border-[#b9c0c7] flex items-center justify-between">
               <h2 className="text-xs font-bold text-slate-800 uppercase tracking-wide">
                 SUBMIT SOLUTION
@@ -467,20 +436,20 @@ export const ProblemDetail: React.FC<ProblemDetailProps> = ({
                 <div className="p-3 bg-blue-50 border border-blue-200 rounded text-center space-y-2">
                   <div className="inline-flex items-center gap-2 text-xs font-bold text-blue-800 font-mono">
                     <span className="w-2 h-2 rounded-full bg-blue-600 animate-ping"></span>
-                    {testingProgress
-                      ? `Testing test ${testingProgress.current} of ${testingProgress.total}...`
-                      : 'Submitting to the judging system...'}
+                    Compiling and testing on the server, including hidden tests...
                   </div>
                   <div className="w-full bg-blue-200 h-1.5 rounded-full overflow-hidden">
                     <div
                       className="bg-blue-600 h-full transition-all duration-150"
-                      style={{
-                        width: testingProgress
-                          ? `${(testingProgress.current / testingProgress.total) * 100}%`
-                          : '15%'
-                      }}
+                      style={{ width: '100%' }}
                     />
                   </div>
+                </div>
+              )}
+
+              {submissionError && !isSubmitting && (
+                <div className="p-3 bg-red-50 border border-red-300 rounded text-xs text-red-800">
+                  {submissionError}
                 </div>
               )}
 

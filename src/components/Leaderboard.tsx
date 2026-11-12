@@ -34,7 +34,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ users, currentUser, on
             </h1>
           </div>
           <p className="text-xs text-slate-500 mt-1">
-            Participant ratings based on problems solved in contests
+            Ratings reflect contest placement and opponent ratings
           </p>
         </div>
 
